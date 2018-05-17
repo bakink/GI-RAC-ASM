@@ -1,0 +1,33 @@
+------ Server Info ---------
+$ crsctl status server  hract21 -f  
+NAME=hract21                       ACTIVE_POOLS=ora.Top_Priority      ACTIVE_CSS_ROLE=hub                 
+$ crsctl status server  hract22 -f  
+NAME=hract22                       ACTIVE_POOLS=ora.Top_Priority      ACTIVE_CSS_ROLE=hub                 
+$ crsctl status server  hract23 -f  
+ 
+ 
+------ RAC Database Info ---------
+$ srvctl config database -d banka   
+Database name: bankA Server pools: Top_Priority 
+Instance bankA_1 is running on node hract21
+Instance bankA_3 is running on node hract22
+ 
+$ srvctl config database -d bankb   
+Database name: bankb Server pools: Low_Priority 
+Database is not running.
+ 
+------ Serverpool Config Info ---------
+$ crsctl status serverpool Free  -f  
+NAME=Free                            IMPORTANCE=0        MIN_SIZE=0          MAX_SIZE=-1         SERVER_CATEGORY=                      
+$ crsctl status serverpool ora.Low_Priority  -f  
+NAME=ora.Low_Priority                IMPORTANCE=5        MIN_SIZE=1          MAX_SIZE=2          SERVER_CATEGORY=ora.hub.category      
+$ crsctl status serverpool ora.Top_Priority  -f  
+NAME=ora.Top_Priority                IMPORTANCE=10       MIN_SIZE=3          MAX_SIZE=3          SERVER_CATEGORY=ora.hub.category      
+ 
+------ Serverpool Runtime Info ---------
+$ srvctl status serverpool  -serverpool  Free -detail  
+Server pool name: Free             Active servers count: 0            Active server names:                
+$ srvctl status serverpool  -serverpool  Low_Priority -detail  
+Server pool name: Low_Priority     Active servers count: 0            Active server names:                
+$ srvctl status serverpool  -serverpool  Top_Priority -detail  
+Server pool name: Top_Priority     Active servers count: 2            Active server names: hract21,hract22          NAME=hract21 STATE=ONLINE          NAME=hract22 STATE=ONLINE 

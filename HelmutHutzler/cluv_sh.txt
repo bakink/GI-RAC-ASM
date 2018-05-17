@@ -1,0 +1,31 @@
+#!/bin/bash 
+#
+#  cluvfy commands to debug partial up and running CRS stack 
+# 
+#  Node1  hract21:  CRS stack is not starting:w
+#  Node2  hract22:  CRS stakc is fully up and running 
+#
+#  Note : This scripts assumes we are logged in on the failing Node : hract21
+#
+Node1=hract21
+Node2=hract22
+
+~/CLUVFY/bin/cluvfy -version
+~/CLUVFY/bin/cluvfy comp  nodecon  -n $Node1,$Node2 -i  eth1
+~/CLUVFY/bin/cluvfy comp  nodecon  -n $Node1,$Node2 -i  eth2
+~/CLUVFY/bin/cluvfy comp nodereach -n $Node1,$Node2 
+~/CLUVFY/bin/cluvfy comp sys -p crs
+#
+# Some of the scripts need a working CRS stack :
+# 
+# When clusterware is not up and running  cluvfy comp healthcheck may report the eror below : these errors are expected 
+#    Cluster Manager Integrity 	FAILED 	This test checks the integrity of cluster manager across the cluster nodes.
+#    Cluster Integrity     	FAILED 	This test checks the integrity of the cluster.
+#    OCR Integrity 	        FAILED 	This test checks the integrity of OCR across the cluster nodes.
+#    CRS Integrity 	        FAILED 	This test checks the integrity of Oracle Clusterware stack across the cluster nodes.
+#
+ssh $Node2 ~/CLUVFY/bin/cluvfy comp healthcheck -collect cluster -html
+ssh $Node2 ~/CLUVFY/bin/cluvfy comp software -n  $Node1,$Node2 
+# Testing multicast 
+ssh $Node2 ~/CLUVFY/bin/cluvfy stage -post hwos -n $Node1
+ssh $Node2 ~/CLUVFY/bin/cluvfy stage -pre crsinst -n $Node1 -networks eth1:192.168.5.0:PUBLIC/eth2:192.168.2.0:cluster_interconnect -verbose

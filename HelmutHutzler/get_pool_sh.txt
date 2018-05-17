@@ -1,0 +1,48 @@
+#!/bin/bash
+
+echo ------ Server Info  --------- 
+for server in hract21  hract22 hract23
+  do
+	cmd="crsctl status server  $server -f"
+	echo "\$ $cmd  " 
+	# echo "\$ $cmd  | egrep \"^NAME|ACTIVE_POOLS|ACTIVE_CSS_ROLE\"" 
+	$cmd | egrep "^NAME|ACTIVE_POOLS|ACTIVE_CSS_ROLE" | awk '  /^NAME|ACTIVE_POOLS|ACTIVE_CSS_ROLE/  { printf("%-35s", $0 ) }  END { printf("") }'
+ 
+        echo " " 
+  done
+echo " " 
+
+echo ------ RAC Database Info  --------- 
+for racdb in banka bankb 
+  do
+	cmd="srvctl config database -d $racdb "  
+	echo "\$ $cmd  " 
+	$cmd | egrep "Database name|Server pools" | tr '\n' ' '; echo ""
+        srvctl status database -d $racdb 
+        echo " " 
+  done
+
+echo ------ Serverpool Config Info    --------- 
+for pool in  Free ora.Low_Priority ora.Top_Priority
+  do
+          cmd="crsctl status serverpool $pool  -f"           
+	  echo "\$ $cmd  " 
+	  #echo "\$ $cmd  | egrep \"^NAME|IMPORTANCE|MIN_SIZE|MAX_SIZE|SERVER_CATEGORY\"" 
+	  $cmd | egrep "^NAME|IMPORTANCE|MIN_SIZE|MAX_SIZE|SERVER_CATEGORY"  \
+             | awk '  /^NAME|SERVER_CATEGORY/  { printf("%-37s", $0 ) }  /IMPORTANCE|MIN_SIZE|MAX_SIZE/  { printf("%-20s", $0 ) } '
+	  echo " "  
+  done 
+echo " "  
+
+echo ------ Serverpool Runtime Info  --------- 
+for pool in  Free Low_Priority Top_Priority
+  do
+	  cmd="srvctl status serverpool  -serverpool  $pool -detail"          
+	  echo "\$ $cmd  " 
+          $cmd  | awk '  /Server pool name|Active servers count|Active server names/  { printf("%-35s", $0 ) }  '
+          $cmd  | awk '  /^NAME/  { printf("%35s", $0 ) } '
+          echo " " 
+  done 
+#cmd="crsctl status server -category My_leaf_nodes"; echo "\$ $cmd "; $cmd
+#cmd="crsctl status serverpool My_leaf_pool -f"; echo "\$ $cmd "; $cmd
+

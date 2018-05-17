@@ -1,0 +1,169 @@
+#!/bin/bash
+#  Description:  
+#         Convert CHM files to more human readable format like vmstat, .... 
+#           - move the MEM Low and CPU high message to the end of the line 
+#           - diplay data in a tabular format 
+#
+#  Usage : ./print_sys.sh  grac41_CHMOS 
+#          grac41_CHMOS = oclumon output from :  tfactl diagcollect 
+#
+#  Run  a report for System Metrics   from  16.01.00 -  16.01.59
+#       %  ~/print_sys.sh  grac41_CHMOS | egrep '#pcpus|cpuq:|03-22-14 10.00'
+#  Output
+#       pcpus: 2   #vcpus: 2   cpuht: N   chipname: Intel(R)  swaptotal: 5210108  physmemtotal: 4354292 #sysfdlimit: 6815744 #disks: 27 #nics: 6  
+#                           cpu:  cpuq: memfree:  mcache:  swapfree:  ior:  iow:  ios: swpin:  swpout: pgin: pgout: netr: netw: procs: rtprocs:  #fds: nicErrors:  
+#       03-22-14 10.00.03   2.60   6     86356    215692   1811240     16     1    11      6       0    17      1    41     7    378       15  19648     0 
+#       03-22-14 10.00.13   5.27   1     89492    224720   1785120   8444  8528   166   2764    3414  4437   3497    41    12    381       15  19680     0 
+#       03-22-14 10.00.18   5.87   1     96180    227256   1776196   7682  5508   534   2004    2400  3762   2524    47    10    388       15  19712     0 
+# ..
+#
+#     ... 
+echo "->   File searched: " $1
+# echo "-> Search Str 1   : " $2
+	# pcpus indicates a SYSTEM Metric report 
+search1="pcpus"
+        #
+	# remove any ; from each line - simplifies processing 
+cat $1  |   sed 's/;/ /g' |  sed 's/'\''//g'  |   awk  'BEGIN  { cnt=0;  }
+           /Node:/ { Node=$0; Nodet1=$4;  Nodet2=$5;   }  
+           /'$search1'/ {      
+          #      printf("%s \n", $1 );
+             if ( $1=="#pcpus:" )  
+	       { 
+	       if ( cnt==0 )   
+		 { 
+		 cnt++; 
+                       # print header:  number of CPUs and Chip Identidy
+                 printf ("%s %s   %s %s   %s %s   %s %s  %s %s  %s %s %s %s %s %s %s %s  \n", \
+                       $1, $2, $3, $4, $5, $6, $7, $8, $21, $22, $15, $16, $47, $48, $49, $50, $51, $52);
+                 printf ("                   cpu:  cpuq: memfree:  mcache:  swapfree:  ior:  iow:  ios: swpin:");
+                 printf ("  swpout: pgin: pgout: netr: netw: procs: rtprocs:  #fds: nicErrors:  \n"  );
+                 } 
+               
+               cnt++; 
+               for (i = 1; i <= NF; i++)	 
+		 { 
+	         if ($i=="cpu:" )   
+		   { 
+		    # printf ("%s ", $(i+1) );
+                    memlow = "";
+                    cpu=$(i+1);
+                    i++;
+                   }
+	         else if ($i=="cpuq:" )   
+		   { 
+		    # printf ("%s ", $(i+1) );
+                    cpuq=$(i+1);
+                    i++;
+                   }
+	         else if ($i=="physmemfree:" )   
+		   { 
+                    physmemfree=$(i+1);
+                    i++;
+                   }
+	         else if ($i=="mcache:" )   
+		   { 
+                    mcache=$(i+1);
+                    i++;
+                   }
+	         else if ($i=="swapfree:" )   
+		   { 
+                    swapfree=$(i+1);
+                    i++;
+                   }
+	         else if ($i=="ior:" )   
+		   { 
+                    ior=$(i+1);
+                    i++;
+                   }
+	         else if ($i=="iow:" )   
+		   { 
+                    iow=$(i+1);
+                    i++;
+                   }
+	         else if ($i=="ios:" )   
+		   { 
+                    ios=$(i+1);
+                    i++;
+                   }
+	         else if ($i=="swpin:" )   
+		   { 
+                    swpin=$(i+1);
+                    i++;
+                   }
+	         else if ($i=="swpout:" )   
+		   { 
+                    swpout=$(i+1);
+                    i++;
+                   }
+	         else if ($i=="pgin:" )   
+		   { 
+                    pgin=$(i+1);
+                    i++;
+                   }
+	         else if ($i=="pgout:" )   
+		   { 
+                    pgout=$(i+1);
+                    i++;
+                   }
+	         else if ($i=="netr:" )   
+		   { 
+                    netr=$(i+1);
+                    i++;
+                   }
+	         else if ($i=="netw:" )   
+		   { 
+                    netw=$(i+1);
+                    i++;
+                   }
+	         else if ($i=="procs:" )   
+		   { 
+                    procs=$(i+1);
+                    i++;
+                   }
+	         else if ($i=="rtprocs:" )   
+		   { 
+                    rtprocs=$(i+1);
+                    i++;
+                   }
+	         else if ($i=="#fds:" )   
+		   { 
+                    fds=$(i+1);
+                    i++;
+                   }
+	         else if ($i=="nicErrors:" )   
+		   { 
+                    nicErrors=$(i+1);
+                    i++;
+                   }
+                 else if ($i== "total-mem")
+		   {
+                   # Record detection for LOW memory  indication 
+                   # Available memory (physmemfree 91516 KB + swapfree 185276 KB) on node grac41 is Too Low (< 10% of total-mem + total-swap)
+                   # Search for  total-mem and select i-2 field which is 10% is the above case
+                   # 
+                   memlow =  $(i-2);
+                   # printf(" **** MEM low: < %s *** " , $(i-2) ); 
+                   }
+     
+                 }
+	       printf ("%s %s %6s %3d %9s %9s %9s  %5s %5s %5s  %5s   %5s %5s  %5s %5d %5d  %5d    %5d  %5d %5d ",  \
+                   Nodet1, Nodet2,  cpu, cpuq, physmemfree, mcache, swapfree, ior, iow, ios, swpin, swpout, pgin,pgout, netr, netw, procs, rtprocs, fds, nicErrors );
+               if ( cpu > 90 )
+		   {
+                   # Record detection for HIGH CPU usage indication 
+                    printf (" CPU > 90% "); 
+                   }
+               if ( memlow != "" )
+		   {
+                    printf(" MEMLOW < %s", memlow);
+                   }
+ 
+               printf("\n");
+               # printf("%s \n", $1 );
+#	       printf("%s %s %6s %3s %10s %10s %10s %5s %5s %5s  %5s   %5s %5s %5s %8s %8s %5s   %5s   %5s %5s \n",  \
+#                     Nodet1, Nodet2,  $10, $12, $14, $18, $20, $24,$26,$28, $30, $32, $34 , $36, $38, $40, $42, $44, $46, $54 ); 
+	       }  
+             } '  
+
+

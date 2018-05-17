@@ -1,0 +1,217 @@
+
+Disk Space : 
+Filesystem            1K-blocks       Used Available Use% Mounted on
+/dev/mapper/vg_gract21-lv_root
+                       51475068   35689244  13148000  74% /
+tmpfs                   1892928    1190764    702164  63% /dev/shm
+/dev/sda1                487652     131463    326493  29% /boot
+/dev/mapper/vg_gract21-lv_home
+                        4960832     648904   4036884  14% /home
+kits                 2930253820 2002329492 927924328  69% /media/sf_kits
+
+Major Clusterware Executable Protections : 
+-rwxr----x 1 root oinstall      9419 Jan 30 12:26 /u01/app/121/grid/bin/ohasd
+-rwxr----x 1 root oinstall 368988837 Jun 30  2014 /u01/app/121/grid/bin/ohasd.bin
+-rwxr----x 1 root oinstall     9419 Jan 30 12:26 /u01/app/121/grid/bin/orarootagent
+-rwxr----x 1 root oinstall 59550963 Jun 30  2014 /u01/app/121/grid/bin/orarootagent.bin
+-rwxr-xr-x 1 grid oinstall     9419 Jan 30 12:26 /u01/app/121/grid/bin/oraagent
+-rwxr-xr-x 1 grid oinstall 59961703 Jun 30  2014 /u01/app/121/grid/bin/oraagent.bin
+-rwxr-xr-x 1 grid oinstall   9419 Jan 30 12:26 /u01/app/121/grid/bin/mdnsd
+-rwxr-xr-x 1 grid oinstall 894378 Jun 30  2014 /u01/app/121/grid/bin/mdnsd.bin
+-rwxr-xr-x 1 grid oinstall    9419 Jan 30 12:26 /u01/app/121/grid/bin/evmd
+-rwxr-xr-x 1 grid oinstall 8099473 Jun 30  2014 /u01/app/121/grid/bin/evmd.bin
+-rwxr-xr-x 1 grid oinstall   9419 Jan 30 12:26 /u01/app/121/grid/bin/gpnpd
+-rwxr-xr-x 1 grid oinstall 717812 Jun 30  2014 /u01/app/121/grid/bin/gpnpd.bin
+-rwxr-xr-x 1 grid oinstall    9419 Jan 30 12:26 /u01/app/121/grid/bin/evmlogger
+-rwxr-xr-x 1 grid oinstall 3847806 Jun 30  2014 /u01/app/121/grid/bin/evmlogger.bin
+-rwxr-x--- 1 root oinstall 102430 Jun 30  2014 /u01/app/121/grid/bin/osysmond.bin
+-rwxr-xr-x 1 grid oinstall    9419 Jan 30 12:26 /u01/app/121/grid/bin/gipcd
+-rwxr-xr-x 1 grid oinstall 1144186 Jun 30  2014 /u01/app/121/grid/bin/gipcd.bin
+-rwxr----x 1 root oinstall 10793731 Jun 30  2014 /u01/app/121/grid/bin/cssdmonitor
+-rwxr----x 1 root oinstall        0 Jan 30 12:26 /u01/app/121/grid/bin/cssdmonitor.bin
+-rwxr----x 1 root oinstall 10793731 Jun 30  2014 /u01/app/121/grid/bin/cssdagent
+-rwxr----x 1 root oinstall        0 Jan 30 12:26 /u01/app/121/grid/bin/cssdagent.bin
+-rwxr-xr-x 1 grid oinstall    9419 Jan 30 12:26 /u01/app/121/grid/bin/ocssd
+-rwxr-xr-x 1 grid oinstall 5501206 Jun 30  2014 /u01/app/121/grid/bin/ocssd.bin
+-rwxr-xr-x 1 grid oinstall    9419 Jan 30 12:26 /u01/app/121/grid/bin/ocssdrim
+-rwxr-xr-x 1 grid oinstall 2302018 Jun 30  2014 /u01/app/121/grid/bin/ocssdrim.bin
+-rwxr----x 1 root oinstall   9419 Jan 30 12:26 /u01/app/121/grid/bin/octssd
+-rwxr----x 1 root oinstall 621712 Jun 30  2014 /u01/app/121/grid/bin/octssd.bin
+-rwxr----x 1 root oinstall 9419 Jan 30 12:26 /u01/app/121/grid/bin/crsd
+-rwxr----x 1 root oinstall 369207571 Jun 30  2014 /u01/app/121/grid/bin/crsd.bin
+-rwxr-x--x 1 grid oinstall 867217 Jan 30 12:08 /u01/app/121/grid/bin/tnslsnr
+
+Ping Nameserver: $ ping -c 2  ns1.example.com  
+PING ns1.example.com (192.168.5.50) 56(84) bytes of data.
+64 bytes from ns1.example.com (192.168.5.50): icmp_seq=1 ttl=64 time=0.091 ms
+64 bytes from ns1.example.com (192.168.5.50): icmp_seq=2 ttl=64 time=0.999 ms
+
+--- ns1.example.com ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1004ms
+rtt min/avg/max/mdev = 0.091/0.545/0.999/0.454 ms
+
+Test your PUBLIC interface and your nameserver setup
+$ nslookup hract21.example.com  
+Server:		192.168.5.50
+Address:	192.168.5.50#53
+
+Name:	hract21.example.com
+Address: 192.168.5.121
+
+Ping PUBLIC IPs: 
+$ ping -I eth1 -c 2   hract21.example.com  
+PING hract21.example.com (192.168.5.121) from 192.168.5.121 eth1: 56(84) bytes of data.
+64 bytes from hract21.example.com (192.168.5.121): icmp_seq=1 ttl=64 time=0.013 ms
+64 bytes from hract21.example.com (192.168.5.121): icmp_seq=2 ttl=64 time=0.049 ms
+
+--- hract21.example.com ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1000ms
+rtt min/avg/max/mdev = 0.013/0.031/0.049/0.018 ms
+$ ping -I eth1 -c 2   hract22.example.com   
+PING hract22.example.com (192.168.5.122) from 192.168.5.121 eth1: 56(84) bytes of data.
+64 bytes from hract22.example.com (192.168.5.122): icmp_seq=1 ttl=64 time=0.060 ms
+64 bytes from hract22.example.com (192.168.5.122): icmp_seq=2 ttl=64 time=0.382 ms
+
+--- hract22.example.com ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+rtt min/avg/max/mdev = 0.060/0.221/0.382/0.161 ms
+
+Ping PRIVATE IPs: 
+$ ping -I eth2 -c 2   192.168.2.121  
+PING 192.168.2.121 (192.168.2.121) from 192.168.2.121 eth2: 56(84) bytes of data.
+64 bytes from 192.168.2.121: icmp_seq=1 ttl=64 time=0.000 ms
+64 bytes from 192.168.2.121: icmp_seq=2 ttl=64 time=0.022 ms
+
+--- 192.168.2.121 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 999ms
+rtt min/avg/max/mdev = 0.000/0.011/0.022/0.011 ms
+$ ping -I eth2 -c 2   192.168.2.122  
+PING 192.168.2.122 (192.168.2.122) from 192.168.2.121 eth2: 56(84) bytes of data.
+64 bytes from 192.168.2.122: icmp_seq=1 ttl=64 time=0.416 ms
+64 bytes from 192.168.2.122: icmp_seq=2 ttl=64 time=0.108 ms
+
+--- 192.168.2.122 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1000ms
+rtt min/avg/max/mdev = 0.108/0.262/0.416/0.154 ms
+
+Verify protections for HOSTNAME.pid - all files should be : 644
+$ find /u01/app/121/grid -name hract21.pid  -exec ls -l {} ;   
+-rw-r--r-- 1 root root 5 Feb 20 08:34 /u01/app/121/grid/ohasd/init/hract21.pid
+-rw-r--r-- 1 root root 5 Feb 20 08:34 /u01/app/121/grid/osysmond/init/hract21.pid
+-rw-r--r-- 1 grid oinstall 5 Feb 20 08:34 /u01/app/121/grid/gpnp/init/hract21.pid
+-rw-r--r-- 1 grid oinstall 5 Feb 20 08:34 /u01/app/121/grid/gipc/init/hract21.pid
+-rw-r--r-- 1 grid oinstall 5 Feb 20 08:34 /u01/app/121/grid/log/hract21/gpnpd/hract21.pid
+-rw-r--r-- 1 root root 5 Feb 20 08:35 /u01/app/121/grid/ctss/init/hract21.pid
+-rw-r--r-- 1 root root 6 Feb 18 10:52 /u01/app/121/grid/gnsd/init/hract21.pid
+-rw-r--r-- 1 root root 5 Feb 20 08:35 /u01/app/121/grid/crs/init/hract21.pid
+-rw-r--r-- 1 grid oinstall 5 Feb 20 08:34 /u01/app/121/grid/evm/init/hract21.pid
+-rw-r--r-- 1 grid oinstall 5 Feb 20 08:34 /u01/app/121/grid/mdns/init/hract21.pid
+-rw-r--r-- 1 root root 6 Feb 18 12:10 /u01/app/121/grid/ologgerd/init/hract21.pid
+
+Service iptables and avahi-daemon should not run - avahi-daemon uses CW port 5353 
+$ service iptables status  
+iptables: Firewall is not running.
+$ ps -elf  |grep avahi | grep -v grep  
+
+Verify Clusterware Port Usage
+Ports :53 :5353 :42422 :8888 should not be used by NON-Clusterware processes 
+  - OC4J reports : tcp   0 0 ::ffff:127.0.0.1:8888  :::*  LISTEN   501 67433979  2580/java
+$ netstat -taupen   | egrep ':53 |:5353 |:42424 |:8888 '   
+udp        0      0 0.0.0.0:5353                0.0.0.0:*                               501        71093844   3032/mdnsd.bin      
+udp        0      0 0.0.0.0:5353                0.0.0.0:*                               501        71093843   3032/mdnsd.bin      
+udp        0      0 0.0.0.0:5353                0.0.0.0:*                               501        71093820   3032/mdnsd.bin      
+udp        0      0 0.0.0.0:5353                0.0.0.0:*                               501        71093776   3032/mdnsd.bin      
+udp        0      0 192.168.2.255:42424         0.0.0.0:*                               0          71140911   2913/ohasd.bin      
+udp        0      0 230.0.1.0:42424             0.0.0.0:*                               0          71140910   2913/ohasd.bin      
+udp        0      0 224.0.0.251:42424           0.0.0.0:*                               0          71140909   2913/ohasd.bin      
+udp        0      0 192.168.2.255:42424         0.0.0.0:*                               501        71124317   3260/ocssd.bin      
+udp        0      0 230.0.1.0:42424             0.0.0.0:*                               501        71124316   3260/ocssd.bin      
+udp        0      0 224.0.0.251:42424           0.0.0.0:*                               501        71124315   3260/ocssd.bin      
+udp        0      0 192.168.2.255:42424         0.0.0.0:*                               501        71117825   3165/gipcd.bin      
+udp        0      0 230.0.1.0:42424             0.0.0.0:*                               501        71117822   3165/gipcd.bin      
+udp        0      0 224.0.0.251:42424           0.0.0.0:*                               501        71117821   3165/gipcd.bin      
+
+Compare profile.xml and the IP Address of PUBLIC and PRIVATE Interfaces 
+ - Devices should report UP BROADCAST RUNNING MULTICAST 
+ - Double check NETWORK addresses matches profile.xml settings   
+
+$ /u01/app/121/grid/bin/gpnptool get -o-   |   xmllint --format - | egrep 'CSS-Profile|ASM-Profile|Network id'  
+    <gpnp:HostNetwork id="gen" HostName="*">
+      <gpnp:Network id="net1" IP="192.168.5.0" Adapter="eth1" Use="public"/>
+      <gpnp:Network id="net2" IP="192.168.2.0" Adapter="eth2" Use="asm,cluster_interconnect"/>
+  <orcl:CSS-Profile id="css" DiscoveryString="+asm" LeaseDuration="400"/>
+  <orcl:ASM-Profile id="asm" DiscoveryString="/dev/asm*" SPFile="+DATA/ract2/ASMPARAMETERFILE/registry.253.870352347" Mode="remote"/>
+
+$ ifconfig eth1  | egrep 'eth|inet addr|MTU'   
+eth1      Link encap:Ethernet  HWaddr 08:00:27:7D:8E:49  
+          inet addr:192.168.5.121  Bcast:192.168.5.255  Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+
+$ ifconfig eth2  | egrep 'eth|inet addr|MTU'   
+eth2      Link encap:Ethernet  HWaddr 08:00:27:4E:C9:BF  
+          inet addr:192.168.2.121  Bcast:192.168.2.255  Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+
+Checking ASM disk status for disk named /dev/asm ...  - you may need to changes this 
+$ ls -l  /dev/asm*
+brw-rw---- 1 grid asmadmin 8, 17 Feb 20 11:27 /dev/asmdisk1_10G
+brw-rw---- 1 grid asmadmin 8, 33 Feb 20 11:27 /dev/asmdisk2_10G
+brw-rw---- 1 grid asmadmin 8, 49 Feb 20 11:27 /dev/asmdisk3_10G
+brw-rw---- 1 grid asmadmin 8, 65 Feb 20 11:27 /dev/asmdisk4_10G
+
+/dev/asm:
+total 0
+
+Verify ASM disk - read disk header locally  
+$ ssh hract22.example.com ocrcheck
+Status of Oracle Cluster Registry is as follows :
+	 Version                  :          4
+	 Total space (kbytes)     :     409568
+	 Used space (kbytes)      :       3384
+	 Available space (kbytes) :     406184
+	 ID                       :  906186229
+	 Device/File Name         :      +DATA
+                                    Device/File integrity check succeeded
+
+                                    Device/File not configured
+
+                                    Device/File not configured
+
+                                    Device/File not configured
+
+                                    Device/File not configured
+
+	 Cluster registry integrity check succeeded
+
+	 Logical corruption check bypassed due to non-privileged user
+
+$ ssh hract22.example.com  asmcmd lsdsk -k
+Total_MB  Free_MB  OS_MB  Name       Failgroup  Failgroup_Type  Library  Label  UDID  Product  Redund   Path
+   10236     5797  10236  DATA_0000  DATA_0000  REGULAR         System                         UNKNOWN  /dev/asmdisk1_10G
+   10236     5791  10236  DATA_0001  DATA_0001  REGULAR         System                         UNKNOWN  /dev/asmdisk2_10G
+   10236     5802  10236  DATA_0002  DATA_0002  REGULAR         System                         UNKNOWN  /dev/asmdisk3_10G
+   10236     5831  10236  DATA_0003  DATA_0003  REGULAR         System                         UNKNOWN  /dev/asmdisk4_10G
+
+$ kfed read /dev/asmdisk1_10G | grep name
+kfdhdb.dskname:               DATA_0000 ; 0x028: length=9
+kfdhdb.grpname:                    DATA ; 0x048: length=4
+kfdhdb.fgname:                DATA_0000 ; 0x068: length=9
+kfdhdb.capname:                         ; 0x088: length=0
+
+$ kfed read /dev/asmdisk2_10G | grep name
+kfdhdb.dskname:               DATA_0001 ; 0x028: length=9
+kfdhdb.grpname:                    DATA ; 0x048: length=4
+kfdhdb.fgname:                DATA_0001 ; 0x068: length=9
+kfdhdb.capname:                         ; 0x088: length=0
+
+$ kfed read /dev/asmdisk3_10G | grep name
+kfdhdb.dskname:               DATA_0002 ; 0x028: length=9
+kfdhdb.grpname:                    DATA ; 0x048: length=4
+kfdhdb.fgname:                DATA_0002 ; 0x068: length=9
+kfdhdb.capname:                         ; 0x088: length=0
+
+$ kfed read /dev/asmdisk4_10G | grep name
+kfdhdb.dskname:               DATA_0003 ; 0x028: length=9
+kfdhdb.grpname:                    DATA ; 0x048: length=4
+kfdhdb.fgname:                DATA_0003 ; 0x068: length=9
+kfdhdb.capname:                         ; 0x088: length=0

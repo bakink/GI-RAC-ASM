@@ -1,0 +1,20 @@
+# dtrace -s check_rac.d 
+dtrace: script 'check_rac.d' matched 21 probes
+CPU     ID                    FUNCTION:NAME
+  0      1                           :BEGIN GRIDHOME: /u01/app/121/grid - GRIDHOME/bin: /u01/app/121/grid/bin  - Temp Loc: /var/tmp/.oracle -  PIDFILE: hract21.pid - Port for bind: 53  
+  0      9                      open:return - Exec: ohasd.bin - open() /var/tmp/.oracle/npohasd failed with error: -6 - scan_dir:  /var/tmp/.oracle 
+  0      9                      open:return - Exec: ohasd.bin - open() /var/tmp/.oracle/npohasd failed with error: -6 - scan_dir:  /var/tmp/.oracle 
+  0     89                   connect:return - Exec: gipcd.bin - PID: 3070  connect() to Nameserver - fd : 27 - IP: 192.168.5.50 - Port: 53 
+  0     89                   connect:return - Exec: gipcd.bin - PID: 3082  connect() to Nameserver - fd : 27 - IP: 192.168.5.50 - Port: 53 
+  0     89                   connect:return - Exec: gipcd.bin - PID: 3096  connect() to Nameserver - fd : 27 - IP: 192.168.5.50 - Port: 53 
+  0     93                    sendto:return - Exec: crsd.bin - PID: 3367  sendto() failed with error : -32 - fd : 203 
+  0     93                    sendto:return - Exec: crsd.bin - PID: 3367  sendto() failed with error : -32 - fd : 203 
+  0    103                      bind:return - Exec: ons - PID: 3514  bind() failed with error : -98 - fd : 9 - IP: 0.0.0.0 - Port: 6200 
+  0     89                   connect:return - Exec: gipcd.bin - PID: 3165  connect() failed with error : -113 - fd : 191 - IP: 192.168.5.123 - Port: 43956 
+  0     89                   connect:return - Exec: gipcd.bin - PID: 3165  connect() failed with error : -113 - fd : 161 - IP: 192.168.5.123 - Port: 43956 
+  0     89                   connect:return - Exec: gipcd.bin - PID: 3165  connect() failed with error : -113 - fd : 161 - IP: 192.168.5.123 - Port: 43956 
+  0     89                   connect:return - Exec: gipcd.bin - PID: 3165  connect() failed with error : -113 - fd : 161 - IP: 192.168.5.123 - Port: 43956 
+  0     89                   connect:return - Exec: gipcd.bin - PID: 3165  connect() failed with error : -113 - fd : 161 - IP: 192.168.5.123 - Port: 43956 
+  0     89                   connect:return - Exec: gipcd.bin - PID: 3165  connect() failed with error : -113 - fd : 161 - IP: 192.168.5.123 - Port: 43956 
+  0    123                    execve:return - Exec: oradism - execve()  /u01/app/121/grid/bin/oradism -  Lower CLUSTERWARE stack successfully started - ret code:  0 - EXITING !
+
