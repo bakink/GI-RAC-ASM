@@ -1,3 +1,6 @@
+
+--https://www.hhutzler.de/blog/delete-a-node-from-oracle-database-12-1-0-2/
+
 alzx4dbadm03@+ASM3|~]$$ORACLE_HOME/deinstall/deinstall -local
 Checking for required files and bootstrapping ...
 Please wait ...
