@@ -6,3 +6,5 @@ How to rename the hostname in RAC (Doc ID 2341779.1)
 CLSRSC-507: The root script cannot proceed on this node <node-n> (Doc ID 1919825.1)   
 Bug 23743557 : 12.2.0.1 GI UPGRADE FROM 11.2 CREATES INCOMPLETE CLUSTER PARAMETER FILE
 
+**
+./addnode.sh -silent "CLUSTER_NEW_NODES={alzx4dbadm03}" "CLUSTER_NEW_VIRTUAL_HOSTNAMES={alzx4db03-vip}" "CLUSTER_NEW_NODE_ROLES=hub"
