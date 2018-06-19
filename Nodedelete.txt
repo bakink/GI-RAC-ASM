@@ -1,0 +1,281 @@
+alzx4dbadm03@+ASM3|~]$$ORACLE_HOME/deinstall/deinstall -local
+Checking for required files and bootstrapping ...
+Please wait ...
+Location of logs /u01/app/oraInventory/logs/
+
+############ ORACLE DECONFIG TOOL START ############
+
+
+######################### DECONFIG CHECK OPERATION START #########################
+## [START] Install check configuration ##
+
+
+Checking for existence of the Oracle home location /u01/app/12.2.0.1/grid
+Oracle Home type selected for deinstall is: Oracle Grid Infrastructure for a Cluster
+Oracle Base selected for deinstall is: /u01/app/oracle
+Checking for existence of central inventory location /u01/app/oraInventory
+Checking for existence of the Oracle Grid Infrastructure home /u01/app/12.2.0.1/grid
+The following nodes are part of this cluster: alzx4dbadm03
+Checking for sufficient temp space availability on node(s) : 'alzx4dbadm03'
+
+## [END] Install check configuration ##
+
+Traces log file: /u01/app/oraInventory/logs//crsdc_2018-05-30_09-56-23-AM.log
+
+Network Configuration check config START
+
+Network de-configuration trace file location: /u01/app/oraInventory/logs/netdc_check2018-05-30_09-56-23-AM.log
+
+Network Configuration check config END
+
+Asm Check Configuration START
+
+ASM de-configuration trace file location: /u01/app/oraInventory/logs/asmcadc_check2018-05-30_09-56-23-AM.log
+
+Database Check Configuration START
+
+Database de-configuration trace file location: /u01/app/oraInventory/logs/databasedc_check2018-05-30_09-56-23-AM.log
+
+Oracle Grid Management database was not found in this Grid Infrastructure home
+
+Database Check Configuration END
+
+######################### DECONFIG CHECK OPERATION END #########################
+
+
+####################### DECONFIG CHECK OPERATION SUMMARY #######################
+Oracle Grid Infrastructure Home is: /u01/app/12.2.0.1/grid
+The following nodes are part of this cluster: alzx4dbadm03
+The cluster node(s) on which the Oracle home deinstallation will be performed are:alzx4dbadm03
+Oracle Home selected for deinstall is: /u01/app/12.2.0.1/grid
+Inventory Location where the Oracle home registered is: /u01/app/oraInventory
+Option -local will not modify any ASM configuration.
+Oracle Grid Management database was not found in this Grid Infrastructure home
+Do you want to continue (y - yes, n - no)? [n]: y
+A log of this session will be written to: '/u01/app/oraInventory/logs/deinstall_deconfig2018-05-30_09-56-21-AM.out'
+Any error messages from this session will be written to: '/u01/app/oraInventory/logs/deinstall_deconfig2018-05-30_09-56-21-AM.err'
+
+######################## DECONFIG CLEAN OPERATION START ########################
+Database de-configuration trace file location: /u01/app/oraInventory/logs/databasedc_clean2018-05-30_09-57-24-AM.log
+ASM de-configuration trace file location: /u01/app/oraInventory/logs/asmcadc_clean2018-05-30_09-57-24-AM.log
+ASM Clean Configuration END
+
+Network Configuration clean config START
+
+Network de-configuration trace file location: /u01/app/oraInventory/logs/netdc_clean2018-05-30_09-57-24-AM.log
+
+Network Configuration clean config END
+
+
+Run the following command as the root user or the administrator on node "alzx4dbadm03".
+
+/u01/app/12.2.0.1/grid/crs/install/rootcrs.sh -force  -deconfig -paramfile "/tmp/deinstall2018-05-30_09-55-57AM/response/deinstall_OraGI12Home2.rsp"
+
+Press Enter after you finish running the above commands
+
+<----------------------------------------
+
+
+######################### DECONFIG CLEAN OPERATION END #########################
+
+
+####################### DECONFIG CLEAN OPERATION SUMMARY #######################
+There is no Oracle Grid Management database to de-configure in this Grid Infrastructure home
+Oracle Clusterware is stopped and successfully de-configured on node "alzx4dbadm03"
+Oracle Clusterware is stopped and de-configured successfully.
+#######################################################################
+
+
+############# ORACLE DECONFIG TOOL END #############
+
+Using properties file /tmp/deinstall2018-05-30_09-55-57AM/response/deinstall_2018-05-30_09-56-21-AM.rsp
+Location of logs /u01/app/oraInventory/logs/
+
+############ ORACLE DEINSTALL TOOL START ############
+
+
+
+
+
+####################### DEINSTALL CHECK OPERATION SUMMARY #######################
+A log of this session will be written to: '/u01/app/oraInventory/logs/deinstall_deconfig2018-05-30_09-56-21-AM.out'
+Any error messages from this session will be written to: '/u01/app/oraInventory/logs/deinstall_deconfig2018-05-30_09-56-21-AM.err'
+
+######################## DEINSTALL CLEAN OPERATION START ########################
+## [START] Preparing for Deinstall ##
+Setting LOCAL_NODE to alzx4dbadm03
+Setting CLUSTER_NODES to alzx4dbadm03
+Setting CRS_HOME to true
+Setting oracle.installer.invPtrLoc to /tmp/deinstall2018-05-30_09-55-57AM/oraInst.loc
+Setting oracle.installer.local to true
+
+## [END] Preparing for Deinstall ##
+
+Setting the force flag to false
+Setting the force flag to cleanup the Oracle Base
+Oracle Universal Installer clean START
+
+Detach Oracle home '/u01/app/12.2.0.1/grid' from the central inventory on the local node : Done
+
+Failed to delete the directory '/u01/app/12.2.0.1/grid'. Either user has no permission to delete or it is in use.
+Delete directory '/u01/app/12.2.0.1/grid' on the local node : Failed <<<<
+
+The Oracle Base directory '/u01/app/oracle' will not be removed on local node. The directory is in use by Oracle Home '/u01/app/oracle/product/11.2.0.4/dbhome_1'.
+
+Oracle Universal Installer cleanup was successful.
+
+Oracle Universal Installer clean END
+
+
+## [START] Oracle install clean ##
+
+
+## [END] Oracle install clean ##
+
+
+######################### DEINSTALL CLEAN OPERATION END #########################
+
+
+####################### DEINSTALL CLEAN OPERATION SUMMARY #######################
+Successfully detached Oracle home '/u01/app/12.2.0.1/grid' from the central inventory on the local node.
+Failed to delete directory '/u01/app/12.2.0.1/grid' on the local node.
+Oracle Universal Installer cleanup was successful.
+
+Review the permissions and contents of '/u01/app/oracle' on nodes(s) 'alzx4dbadm03'.
+If there are no Oracle home(s) associated with '/u01/app/oracle', manually delete '/u01/app/oracle' and its contents.
+Oracle deinstall tool successfully cleaned up temporary directories.
+#######################################################################
+
+
+############# ORACLE DEINSTALL TOOL END #############
+
+
+[root@alzx4dbadm03 ~]# /u01/app/12.2.0.1/grid/crs/install/rootcrs.sh -force  -deconfig -paramfile "/tmp/deinstall2018-05-30_09-55-57AM/response/deinstall_OraGI12Home2.rsp"
+Using configuration parameter file: /tmp/deinstall2018-05-30_09-55-57AM/response/deinstall_OraGI12Home2.rsp
+The log of current session can be found at:
+  /u01/app/oraInventory/logs/crsdeconfig_alzx4dbadm03_2018-05-30_09-58-02AM.log
+PRCR-1070 : Failed to check if resource ora.net1.network is registered
+CRS-0184 : Cannot communicate with the CRS daemon.
+PRCR-1070 : Failed to check if resource ora.helper is registered
+CRS-0184 : Cannot communicate with the CRS daemon.
+PRCR-1070 : Failed to check if resource ora.ons is registered
+CRS-0184 : Cannot communicate with the CRS daemon.
+
+2018/05/30 09:58:13 CLSRSC-180: An error occurred while executing the command '/u01/app/12.2.0.1/grid/bin/srvctl config nodeapps'
+2018/05/30 09:58:30 CLSRSC-4006: Removing Oracle Trace File Analyzer (TFA) Collector.
+2018/05/30 09:58:47 CLSRSC-4007: Successfully removed Oracle Trace File Analyzer (TFA) Collector.
+2018/05/30 09:58:48 CLSRSC-336: Successfully deconfigured Oracle Clusterware stack on this node
+
+
+[root@alzx4dbadm01 ~]# /u01/app/12.2.0.1/grid/bin/crsctl delete node -n alzx4dbadm03
+CRS-4661: Node alzx4dbadm03 successfully deleted.
+[root@alzx4dbadm01 ~]# su - oracle
+oracle@alzx4dbadm01|~]$grid
+
+alzx4dbadm01@+ASM1|~]$cluvfy stage -post nodedel -n alzx4dbadm03 -verbose
+
+Verifying Node Removal ...
+  Verifying CRS Integrity ...PASSED
+  Verifying Clusterware Version Consistency ...PASSED
+Verifying Node Removal ...PASSED
+
+Post-check for node removal was successful. 
+
+CVU operation performed:      stage -post nodedel
+Date:                         May 30, 2018 10:15:50 AM
+CVU home:                     /u01/app/12.2.0.1/grid/
+User:                         oracle
+
+alzx4dbadm01@+ASM1|~]$srvctl config vip -node alzx4dbadm03
+VIP exists: network number 1, hosting node alzx4dbadm03
+VIP Name: alzx4db03-vip.allianz-tr.local
+VIP IPv4 Address: 10.70.46.25
+VIP IPv6 Address: 
+VIP is enabled.
+VIP is individually enabled on nodes: 
+VIP is individually disabled on nodes: 
+VIP exists: network number 2, hosting node alzx4dbadm03
+VIP IPv4 Address: 10.70.3.149
+VIP IPv6 Address: 
+VIP is enabled.
+VIP is individually enabled on nodes: 
+VIP is individually disabled on nodes: 
+VIP exists: network number 3, hosting node alzx4dbadm03
+VIP IPv4 Address: 10.70.5.41
+VIP IPv6 Address: 
+VIP is enabled.
+VIP is individually enabled on nodes: 
+VIP is individually disabled on nodes: 
+VIP exists: network number 4, hosting node alzx4dbadm03
+VIP IPv4 Address: 192.168.10.53
+VIP IPv6 Address: 
+VIP is enabled.
+VIP is individually enabled on nodes: 
+VIP is individually disabled on nodes: 
+alzx4dbadm01@+ASM1|~]$ srvctl stop vip -node alzx4dbadm03
+PRKO-3250 : Failed to stop VIPs on node alzx4dbadm03 because no VIP was running on the given node
+alzx4dbadm01@+ASM1|~]$srvctl remove vip -vip alzx4db03-vip.allianz-tr.local
+Please confirm that you intend to remove the VIPs alzx4db03-vip.allianz-tr.local (y/[n]) y
+PRKO-2380 : VIP alzx4db03-vip.allianz-tr.local is still running on node: alzx4dbadm04
+alzx4dbadm01@+ASM1|~]$srvctl 
+alzx4dbadm01@+ASM1|~]$srvctl stop vip -h
+
+Stop the specified VIP, or all VIPs, including failed-over VIPs, on the specified node.
+
+Usage: srvctl stop vip {-node <node_name> [-netnum <network_number>] | -vip <vip_name>} [-force] [-relocate] [-verbose]
+    -node <node_name>              Node name on which to stop all VIPs
+    -vip <vip_name>                VIP name or address to stop
+    -netnum  <network_number>      Network number
+    -relocate                      Relocate VIP and possibly dependent services
+    -force                         Force stop
+    -verbose                       Verbose output
+    -help                          Print usage
+alzx4dbadm01@+ASM1|~]$srvctl stop vip -vip alzx4db03-vip.allianz-tr.local
+alzx4dbadm01@+ASM1|~]$srvctl remove vip -vip alzx4db03-vip.allianz-tr.local
+Please confirm that you intend to remove the VIPs alzx4db03-vip.allianz-tr.local (y/[n]) y
+PRKO-2381 : VIP alzx4db03-vip.allianz-tr.local is not removed successfully:  
+PRCN-2018 : Current user oracle is not a privileged user
+[root@alzx4dbadm01 ~]# /u01/app/12.2.0.1/grid/bin/srvctl remove vip -vip alzx4db03-vip.allianz-tr.local
+Please confirm that you intend to remove the VIPs alzx4db03-vip.allianz-tr.local (y/[n]) y
+[root@alzx4dbadm01 ~]# /u01/app/12.2.0.1/grid/bin/srvctl config vip -node alzx4dbadm03
+VIP exists: network number 2, hosting node alzx4dbadm03
+VIP IPv4 Address: 10.70.3.149
+VIP IPv6 Address: 
+VIP is enabled.
+VIP is individually enabled on nodes: 
+VIP is individually disabled on nodes: 
+VIP exists: network number 3, hosting node alzx4dbadm03
+VIP IPv4 Address: 10.70.5.41
+VIP IPv6 Address: 
+VIP is enabled.
+VIP is individually enabled on nodes: 
+VIP is individually disabled on nodes: 
+VIP exists: network number 4, hosting node alzx4dbadm03
+VIP IPv4 Address: 192.168.10.53
+VIP IPv6 Address: 
+VIP is enabled.
+VIP is individually enabled on nodes: 
+VIP is individually disabled on nodes: 
+alzx4dbadm01@+ASM1|~]$srvctl stop vip -vip 10.70.3.149
+alzx4dbadm01@+ASM1|~]$srvctl stop vip -vip 10.70.5.41
+alzx4dbadm01@+ASM1|~]$srvctl stop vip -vip 192.168.10.53
+alzx4dbadm01@+ASM1|~]$srvctl remove vip -vip 10.70.3.149
+Please confirm that you intend to remove the VIPs 10.70.3.149 (y/[n]) y
+PRKO-2381 : VIP 10.70.3.149 is not removed successfully:  
+PRCN-2018 : Current user oracle is not a privileged user
+alzx4dbadm01@+ASM1|~]$exit
+logout
+[root@alzx4dbadm01 ~]# /u01/app/12.2.0.1/grid/bin/srvctl remove vip -vip 10.70.3.149
+Please confirm that you intend to remove the VIPs 10.70.3.149 (y/[n]) y
+[root@alzx4dbadm01 ~]# /u01/app/12.2.0.1/grid/bin/srvctl remove vip -vip 10.70.5.41
+Please confirm that you intend to remove the VIPs 10.70.5.41 (y/[n]) y
+[root@alzx4dbadm01 ~]# /u01/app/12.2.0.1/grid/bin/srvctl remove vip -vip 192.168.10.53
+Please confirm that you intend to remove the VIPs 192.168.10.53 (y/[n]) y
+
+[root@alzx4dbadm01 ~]# /u01/app/12.2.0.1/grid/bin/srvctl config vip -node alzx4dbadm03
+PRKO-2310 : VIP does not exist on node alzx4dbadm03.
+
+
+
+
+

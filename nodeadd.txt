@@ -1,0 +1,239 @@
+oracle@alzx4dbadm01|~]$grid
+alzx4dbadm01@+ASM1|~]$cluvfy stage -pre nodeadd -n alzx4dbadm03
+
+Verifying Physical Memory ...PASSED
+Verifying Available Physical Memory ...PASSED
+Verifying Swap Size ...PASSED
+Verifying Free Space: alzx4dbadm01:/usr,alzx4dbadm01:/var,alzx4dbadm01:/etc,alzx4dbadm01:/sbin,alzx4dbadm01:/tmp ...PASSED
+Verifying Free Space: alzx4dbadm01:/u01/app/12.2.0.1/grid ...PASSED
+Verifying Free Space: alzx4dbadm03:/usr,alzx4dbadm03:/var,alzx4dbadm03:/etc,alzx4dbadm03:/sbin,alzx4dbadm03:/tmp ...PASSED
+Verifying Free Space: alzx4dbadm03:/u01/app/12.2.0.1/grid ...PASSED
+Verifying User Existence: oracle ...
+  Verifying Users With Same UID: 1001 ...PASSED
+Verifying User Existence: oracle ...PASSED
+Verifying User Existence: root ...
+  Verifying Users With Same UID: 0 ...PASSED
+Verifying User Existence: root ...PASSED
+Verifying Group Existence: dba ...PASSED
+Verifying Group Existence: oinstall ...PASSED
+Verifying Group Membership: oinstall ...PASSED
+Verifying Group Membership: dba ...PASSED
+Verifying Run Level ...PASSED
+Verifying Hard Limit: maximum open file descriptors ...PASSED
+Verifying Soft Limit: maximum open file descriptors ...PASSED
+Verifying Hard Limit: maximum user processes ...PASSED
+Verifying Soft Limit: maximum user processes ...PASSED
+Verifying Soft Limit: maximum stack size ...PASSED
+Verifying Architecture ...PASSED
+Verifying OS Kernel Version ...PASSED
+Verifying OS Kernel Parameter: semmsl ...PASSED
+Verifying OS Kernel Parameter: semmns ...PASSED
+Verifying OS Kernel Parameter: semopm ...PASSED
+Verifying OS Kernel Parameter: semmni ...PASSED
+Verifying OS Kernel Parameter: shmmax ...PASSED
+Verifying OS Kernel Parameter: shmmni ...PASSED
+Verifying OS Kernel Parameter: shmall ...PASSED
+Verifying OS Kernel Parameter: file-max ...PASSED
+Verifying OS Kernel Parameter: ip_local_port_range ...PASSED
+Verifying OS Kernel Parameter: rmem_default ...PASSED
+Verifying OS Kernel Parameter: rmem_max ...PASSED
+Verifying OS Kernel Parameter: wmem_default ...PASSED
+Verifying OS Kernel Parameter: wmem_max ...PASSED
+Verifying OS Kernel Parameter: aio-max-nr ...PASSED
+Verifying OS Kernel Parameter: panic_on_oops ...PASSED
+Verifying Package: binutils-2.20.51.0.2 ...PASSED
+Verifying Package: compat-libcap1-1.10 ...PASSED
+Verifying Package: compat-libstdc++-33-3.2.3 (x86_64) ...PASSED
+Verifying Package: libgcc-4.4.7 (x86_64) ...PASSED
+Verifying Package: libstdc++-4.4.7 (x86_64) ...PASSED
+Verifying Package: libstdc++-devel-4.4.7 (x86_64) ...PASSED
+Verifying Package: sysstat-9.0.4 ...PASSED
+Verifying Package: ksh ...PASSED
+Verifying Package: make-3.81 ...PASSED
+Verifying Package: glibc-2.12 (x86_64) ...PASSED
+Verifying Package: glibc-devel-2.12 (x86_64) ...PASSED
+Verifying Package: libaio-0.3.107 (x86_64) ...PASSED
+Verifying Package: libaio-devel-0.3.107 (x86_64) ...PASSED
+Verifying Package: nfs-utils-1.2.3-15 ...PASSED
+Verifying Package: e2fsprogs-1.42.8 ...PASSED
+Verifying Package: e2fsprogs-libs-1.42.8 (x86_64) ...PASSED
+Verifying Package: smartmontools-5.43-1 ...PASSED
+Verifying Package: net-tools-1.60-110 ...PASSED
+Verifying Users With Same UID: 0 ...PASSED
+Verifying Current Group ID ...PASSED
+Verifying Root user consistency ...PASSED
+Verifying Node Addition ...
+  Verifying CRS Integrity ...PASSED
+  Verifying Clusterware Version Consistency ...PASSED
+  Verifying '/u01/app/12.2.0.1/grid' ...PASSED
+Verifying Node Addition ...PASSED
+Verifying Node Connectivity ...
+  Verifying Hosts File ...PASSED
+  Verifying Check that maximum (MTU) size packet goes through subnet ...PASSED
+  Verifying subnet mask consistency for subnet "10.70.46.0" ...PASSED
+  Verifying subnet mask consistency for subnet "192.168.8.0" ...PASSED
+Verifying Node Connectivity ...PASSED
+Verifying Multicast check ...PASSED
+Verifying ASM Integrity ...
+  Verifying Node Connectivity ...
+    Verifying Hosts File ...PASSED
+    Verifying Check that maximum (MTU) size packet goes through subnet ...PASSED
+    Verifying subnet mask consistency for subnet "10.70.46.0" ...PASSED
+    Verifying subnet mask consistency for subnet "192.168.8.0" ...PASSED
+  Verifying Node Connectivity ...PASSED
+Verifying ASM Integrity ...PASSED
+Verifying Database home availability ...PASSED
+Verifying OCR Integrity ...PASSED
+Verifying Time zone consistency ...PASSED
+Verifying Network Time Protocol (NTP) ...
+  Verifying '/etc/ntp.conf' ...PASSED
+  Verifying '/var/run/ntpd.pid' ...PASSED
+  Verifying Daemon 'ntpd' ...PASSED
+  Verifying NTP daemon or service using UDP port 123 ...PASSED
+  Verifying NTP daemon is synchronized with at least one external time source ...PASSED
+Verifying Network Time Protocol (NTP) ...PASSED
+Verifying User Not In Group "root": oracle ...PASSED
+Verifying resolv.conf Integrity ...PASSED
+Verifying DNS/NIS name service ...PASSED
+Verifying User Equivalence ...PASSED
+Verifying /dev/shm mounted as temporary file system ...PASSED
+Verifying /boot mount ...PASSED
+Verifying zeroconf check ...PASSED
+
+Pre-check for node addition was successful. 
+
+CVU operation performed:      stage -pre nodeadd
+Date:                         May 30, 2018 10:41:11 AM
+CVU home:                     /u01/app/12.2.0.1/grid/
+User:                         oracle
+
+
+alzx4dbadm01@+ASM1|addnode]$./addnode.sh -silent "CLUSTER_NEW_NODES={alzx4db03}" "CLUSTER_NEW_VIRTUAL_HOSTNAMES={alzx4db03-vip}" 
+[FATAL] [INS-43045] CLUSTER_NEW_NODE_ROLES parameter was not specified.
+   CAUSE: The CLUSTER_NEW_NODE_ROLES parameter was not provided for performing addnode operation.
+   ACTION: Ensure that CLUSTER_NEW_NODE_ROLES parameter is passed. Refer to installation guide for more information on the syntax of passing CLUSTER_NEW_VIRTUAL_HOSTNAMES parameter.
+
+   alzx4dbadm01@+ASM1|addnode]$asmcmd
+ASMCMD> showclustermode
+ASM cluster : Flex mode enabled
+ASMCMD> 
+
+
+alzx4dbadm01@+ASM1|addnode]$./addnode.sh -silent "CLUSTER_NEW_NODES={alzx4db03}" "CLUSTER_NEW_VIRTUAL_HOSTNAMES={alzx4db03-vip}" "CLUSTER_NEW_NODE_ROLES=hub"
+[WARNING] [INS-40111] The specified Oracle Base location is not empty on following nodes: [alzx4db03].
+   ACTION: Specify an empty location for Oracle Base.
+
+Prepare Configuration in progress.
+
+Prepare Configuration successful.
+..................................................   7% Done.
+
+Copy Files to Remote Nodes in progress.
+..................................................   12% Done.
+..................................................   17% Done.
+..............................
+Copy Files to Remote Nodes successful.
+You can find the log of this install session at:
+ /u01/app/oraInventory/logs/addNodeActions2018-05-30_11-24-05-AM.log
+
+Instantiate files in progress.
+
+Instantiate files successful.
+..................................................   49% Done.
+
+Saving cluster inventory in progress.
+..................................................   83% Done.
+
+Saving cluster inventory successful.
+The Cluster Node Addition of /u01/app/12.2.0.1/grid was successful.
+Please check '/u01/app/12.2.0.1/grid/inventory/silentInstall2018-05-30_11-24-05-AM.log' for more details.
+
+Setup Oracle Base in progress.
+
+Setup Oracle Base successful.
+..................................................   90% Done.
+
+Update Inventory in progress.
+
+Update Inventory successful.
+..................................................   97% Done.
+
+As a root user, execute the following script(s):
+	1. /u01/app/12.2.0.1/grid/root.sh
+
+Execute /u01/app/12.2.0.1/grid/root.sh on the following nodes: 
+[alzx4db03]
+
+The scripts can be executed in parallel on all the nodes.
+
+..................................................   100% Done.
+Successfully Setup Software.
+
+
+********1 *********
+
+[root@alzx4dbadm03 ~]# /u01/app/12.2.0.1/grid/root.sh
+Check /u01/app/12.2.0.1/grid/install/root_alzx4dbadm03.allianz-tr.local_2018-05-30_11-32-35-085837206.log for the output of root script
+
+[root@alzx4dbadm03 ~]# more /u01/app/12.2.0.1/grid/install/root_alzx4dbadm03.allianz-tr.local_2018-05-30_11-32-35-085837206.log
+Performing root user operation.
+
+The following environment variables are set as:
+    ORACLE_OWNER= oracle
+    ORACLE_HOME=  /u01/app/12.2.0.1/grid
+   Copying dbhome to /usr/local/bin ...
+   Copying oraenv to /usr/local/bin ...
+   Copying coraenv to /usr/local/bin ...
+
+
+Creating /etc/oratab file...
+Entries will be added to the /etc/oratab file as needed by
+Database Configuration Assistant when a database is created
+Finished running generic part of root script.
+Now product-specific root actions will be performed.
+/bin/mkdir: cannot create directory `/var/tmp/.oracle': File exists
+/bin/mkdir: cannot create directory `/tmp/.oracle': File exists
+Relinking oracle with rac_on option
+Using configuration parameter file: /u01/app/12.2.0.1/grid/crs/install/crsconfig_params
+The log of current session can be found at:
+  /u01/app/oracle/crsdata/alzx4dbadm03/crsconfig/rootcrs_alzx4dbadm03_2018-05-30_11-32-43AM.log
+2018/05/30 11:32:44 CLSRSC-670: failed to configure the node due to unexpected parameter settings
+Died at /u01/app/12.2.0.1/grid/crs/install/crsinstall.pm line 3078.
+The command '/u01/app/12.2.0.1/grid/perl/bin/perl -I/u01/app/12.2.0.1/grid/perl/lib -I/u01/app/12.2.0.1/grid/crs/install /u01/app/12.2.0.1/grid/crs/install/rootcrs.pl ' execution failed
+
+
+************** 2 *********** 
+
+workaround ASM_UPGRADE=false applied then : mosdoc id 2353529.1
+
+alzx4dbadm03@+ASM3|install]$more /u01/app/12.2.0.1/grid/install/root_alzx4dbadm03.allianz-tr.local_2018-05-30_11-48-49-868917991.log
+Performing root user operation.
+
+The following environment variables are set as:
+    ORACLE_OWNER= oracle
+    ORACLE_HOME=  /u01/app/12.2.0.1/grid
+   Copying dbhome to /usr/local/bin ...
+   Copying oraenv to /usr/local/bin ...
+   Copying coraenv to /usr/local/bin ...
+
+Entries will be added to the /etc/oratab file as needed by
+Database Configuration Assistant when a database is created
+Finished running generic part of root script.
+Now product-specific root actions will be performed.
+Relinking oracle with rac_on option
+Using configuration parameter file: /u01/app/12.2.0.1/grid/crs/install/crsconfig_params
+The log of current session can be found at:
+  /u01/app/oracle/crsdata/alzx4dbadm03/crsconfig/rootcrs_alzx4dbadm03_2018-05-30_11-48-50AM.log
+2018/05/30 11:48:51 CLSRSC-594: Executing installation step 1 of 19: 'SetupTFA'.
+2018/05/30 11:48:51 CLSRSC-4001: Installing Oracle Trace File Analyzer (TFA) Collector.
+2018/05/30 11:49:16 CLSRSC-4002: Successfully installed Oracle Trace File Analyzer (TFA) Collector.
+2018/05/30 11:49:16 CLSRSC-594: Executing installation step 2 of 19: 'ValidateEnv'.
+2018/05/30 11:49:17 CLSRSC-594: Executing installation step 3 of 19: 'CheckFirstNode'.
+2018/05/30 11:49:23 CLSRSC-507: The root script cannot proceed on this node alzx4dbadm03 because either the first-node operations have not completed on node alzx4dbadm04 or there was an error
+ in obtaining the status of the first-node operations.
+Died at /u01/app/12.2.0.1/grid/crs/install/crsutils.pm line 4082.
+The command '/u01/app/12.2.0.1/grid/perl/bin/perl -I/u01/app/12.2.0.1/grid/perl/lib -I/u01/app/12.2.0.1/grid/crs/install /u01/app/12.2.0.1/grid/crs/install/rootcrs.pl ' execution failed
+
+
+
+
