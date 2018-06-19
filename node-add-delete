@@ -1,0 +1,8 @@
+
+CLSRSC-670 Error from root.sh When Adding a Node (Doc ID 2353529.1)
+Oracle Restart 12.2: root.sh Fails with Site name invalid Message and Failed to create keys in the OLR, rc = 100"CLSRSC-188" (Doc ID 2323421.1)
+11gR2 "crsctl query css votedisk" Fails "'css' is an invalid argument" (Doc ID 1149723.1)
+How to rename the hostname in RAC (Doc ID 2341779.1)
+CLSRSC-507: The root script cannot proceed on this node <node-n> (Doc ID 1919825.1)   
+Bug 23743557 : 12.2.0.1 GI UPGRADE FROM 11.2 CREATES INCOMPLETE CLUSTER PARAMETER FILE
+
