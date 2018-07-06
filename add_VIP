@@ -1,0 +1,10 @@
+
+root ile
+
+/u01/app/12.2.0.1/grid/bin/srvctl add vip -node alzx4dbadm03 -netnum 3 -address 10.70.5.41/255.255.255.0/eth5
+
+oracle ile
+
+srvctl config vip -node alzx4dbadm03
+srvctl remove listener -l LISTENER_DG
+srvctl add listener -l LISTENER_DG -netnum 3 -endpoints TCP:1923
