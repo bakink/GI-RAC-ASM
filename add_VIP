@@ -1,4 +1,24 @@
 
+
+--https://levipereira.wordpress.com/2011/10/22/how-configure-multiples-public-network-an-grid-infrastructure-11g-r2-11-2-environment/ 
+srvctl add network -netnum 3 -subnet 10.70.5.0/255.255.255.0/eth5 -nettype STATIC
+
+srvctl add listener -l LISTENER_DG -o /u01/app/12.1.0.2/grid -p 1923 -netnum 3  
+srvctl add network -netnum 3 -subnet 10.70.5.0/255.255.255.0/eth5 -nettype STATIC
+
+srvctl add listener -l LISTENER_DG -o /u01/app/12.1.0.2/grid -p 1923 -netnum 3 
+srvctl add listener -l LISTENER_BKP -o /u01/app/12.1.0.2/grid -p 1071 -netnum 2
+
+
+
+ALTER SYSTEM 
+SET LISTENER_NETWORKS = '((NAME=dg_network)(LOCAL_LISTENER=listener_net3)
+			(REMOTE_LISTENER=remote_net3))'
+                         SCOPE=BOTH SID='OPUSDATA4'; 
+
+
+ 
+---Add VIP 
 root ile
 
 /u01/app/12.2.0.1/grid/bin/srvctl add vip -node alzx4dbadm03 -netnum 3 -address 10.70.5.41/255.255.255.0/eth5
