@@ -1,0 +1,92 @@
+
+--relocate services.
+Last login: Mon Jul 16 10:27:56 2018 from 10.70.80.101
+oracle@alzx6dbadm01|~]$. .opusdata.env
+alzx6dbadm01@OPUSDATA1|~]$srvctl status service -d OPUSDATA 
+Service OPUSAUX is running on instance(s) OPUSDATA4
+Service OPUSAZNET is running on instance(s) OPUSDATA1,OPUSDATA2,OPUSDATA3,OPUSDATA4
+Service OPUSBATCH is running on instance(s) OPUSDATA2,OPUSDATA3,OPUSDATA4
+Service OPUSCITRIX is running on instance(s) OPUSDATA3,OPUSDATA4
+Service OPUSCOGNOS is running on instance(s) OPUSDATA4
+Service OPUSLNK is running on instance(s) OPUSDATA1,OPUSDATA2,OPUSDATA3,OPUSDATA4
+Service OPUSMAP is running on instance(s) OPUSDATA1,OPUSDATA2,OPUSDATA3,OPUSDATA4
+Service OPUSOPNET is running on instance(s) OPUSDATA1,OPUSDATA2,OPUSDATA3,OPUSDATA4
+Service OPUSPRV is running on instance(s) OPUSDATA2,OPUSDATA3,OPUSDATA4
+Service OPUSRAPOR is running on instance(s) OPUSDATA4
+Service OPUSSAS is running on instance(s) OPUSDATA4
+Service OPUSWEB is running on instance(s) OPUSDATA3
+Service SBMTEKLIFWS is running on instance(s) OPUSDATA4
+alzx6dbadm01@OPUSDATA1|~]$
+alzx6dbadm01@OPUSDATA1|~]$
+alzx6dbadm01@OPUSDATA1|~]$srvctl config service -d OPUSDATA |grep -e "Service name" -e "Preferred instances" -e "Available instances"
+Service name: OPUSAUX
+Preferred instances: OPUSDATA4
+Available instances: OPUSDATA3
+Service name: OPUSAZNET
+Preferred instances: OPUSDATA1,OPUSDATA2,OPUSDATA3,OPUSDATA4
+Available instances: 
+Service name: OPUSBATCH
+Preferred instances: OPUSDATA1,OPUSDATA2,OPUSDATA3
+Available instances: OPUSDATA4
+Service name: OPUSCITRIX
+Preferred instances: OPUSDATA3,OPUSDATA4
+Available instances: 
+Service name: OPUSCOGNOS
+Preferred instances: OPUSDATA4
+Available instances: OPUSDATA3
+Service name: OPUSLNK
+Preferred instances: OPUSDATA1,OPUSDATA2,OPUSDATA3,OPUSDATA4
+Available instances: 
+Service name: OPUSMAP
+Preferred instances: OPUSDATA1,OPUSDATA2,OPUSDATA3,OPUSDATA4
+Available instances: 
+Service name: OPUSOPNET
+Preferred instances: OPUSDATA1,OPUSDATA2,OPUSDATA3,OPUSDATA4
+Available instances: 
+Service name: OPUSPRV
+Preferred instances: OPUSDATA1,OPUSDATA2,OPUSDATA3
+Available instances: OPUSDATA4
+Service name: OPUSRAPOR
+Preferred instances: OPUSDATA4
+Available instances: OPUSDATA3
+Service name: OPUSSAS
+Preferred instances: OPUSDATA4
+Available instances: OPUSDATA3
+Service name: OPUSWEB
+Preferred instances: OPUSDATA3
+Available instances: OPUSDATA4
+Service name: SBMTEKLIFWS
+Preferred instances: OPUSDATA4
+Available instances: OPUSDATA3
+alzx6dbadm01@OPUSDATA1|~]$
+alzx6dbadm01@OPUSDATA1|~]$srvctl relocate service -d OPUSDATA -s OPUSBATCH -i OPUSDATA4 -t OPUSDATA1
+alzx6dbadm01@OPUSDATA1|~]$srvctl status service -d OPUSDATA 
+Service OPUSAUX is running on instance(s) OPUSDATA4
+Service OPUSAZNET is running on instance(s) OPUSDATA1,OPUSDATA2,OPUSDATA3,OPUSDATA4
+Service OPUSBATCH is running on instance(s) OPUSDATA1,OPUSDATA2,OPUSDATA3
+Service OPUSCITRIX is running on instance(s) OPUSDATA3,OPUSDATA4
+Service OPUSCOGNOS is running on instance(s) OPUSDATA4
+Service OPUSLNK is running on instance(s) OPUSDATA1,OPUSDATA2,OPUSDATA3,OPUSDATA4
+Service OPUSMAP is running on instance(s) OPUSDATA1,OPUSDATA2,OPUSDATA3,OPUSDATA4
+Service OPUSOPNET is running on instance(s) OPUSDATA1,OPUSDATA2,OPUSDATA3,OPUSDATA4
+Service OPUSPRV is running on instance(s) OPUSDATA2,OPUSDATA3,OPUSDATA4
+Service OPUSRAPOR is running on instance(s) OPUSDATA4
+Service OPUSSAS is running on instance(s) OPUSDATA4
+Service OPUSWEB is running on instance(s) OPUSDATA3
+Service SBMTEKLIFWS is running on instance(s) OPUSDATA4
+alzx6dbadm01@OPUSDATA1|~]$srvctl relocate service -d OPUSDATA -s OPUSPRV -i OPUSDATA4 -t OPUSDATA1
+alzx6dbadm01@OPUSDATA1|~]$srvctl status service -d OPUSDATA 
+Service OPUSAUX is running on instance(s) OPUSDATA4
+Service OPUSAZNET is running on instance(s) OPUSDATA1,OPUSDATA2,OPUSDATA3,OPUSDATA4
+Service OPUSBATCH is running on instance(s) OPUSDATA1,OPUSDATA2,OPUSDATA3
+Service OPUSCITRIX is running on instance(s) OPUSDATA3,OPUSDATA4
+Service OPUSCOGNOS is running on instance(s) OPUSDATA4
+Service OPUSLNK is running on instance(s) OPUSDATA1,OPUSDATA2,OPUSDATA3,OPUSDATA4
+Service OPUSMAP is running on instance(s) OPUSDATA1,OPUSDATA2,OPUSDATA3,OPUSDATA4
+Service OPUSOPNET is running on instance(s) OPUSDATA1,OPUSDATA2,OPUSDATA3,OPUSDATA4
+Service OPUSPRV is running on instance(s) OPUSDATA1,OPUSDATA2,OPUSDATA3
+Service OPUSRAPOR is running on instance(s) OPUSDATA4
+Service OPUSSAS is running on instance(s) OPUSDATA4
+Service OPUSWEB is running on instance(s) OPUSDATA3
+Service SBMTEKLIFWS is running on instance(s) OPUSDATA4
+alzx6dbadm01@OPUSDATA1|~]$
