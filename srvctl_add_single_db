@@ -1,0 +1,2 @@
+
+srvctl add database -d OPUSDEV -c 'Single' -x alzx4dbadm02 -o /u01/app/oracle/product/11.2.0.4/dbhome_1 -p /u01/app/oracle/product/11.2.0.4/dbhome_1/dbs/spfileOPUSDEV.ora 
