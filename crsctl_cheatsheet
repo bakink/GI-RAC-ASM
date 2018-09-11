@@ -4,3 +4,43 @@
 
 crsctl status res |grep -v "^$"|awk -F "=" 'BEGIN {print " "} {printf("%s",NR%4 ? $2"|" : $2"\n")}'|sed -e 's/  *, /,/g' -e 's/, /,/g'|\
 awk -F "|" 'BEGIN { printf "%-40s%-35s%-20s%-50s\n","Resource Name","Resource Type","Target ","State" }{ split ($3,trg,",") split ($4,st,",")}{for (i in trg) {printf "%-40s%-35s%-20s%-50s\n",$1,$2,trg[i],st[i]}}'
+
+create directory crsctl_dir as '/home/oracle/scripts/bakis';
+drop table db_node;
+create table db_node
+(
+Resource_Name varchar2(40),                           
+Resource_Type varchar2(35),                      
+Target         varchar2(20),      
+State     varchar2(50),
+Run_Date  date  
+)
+organization external
+(
+  type oracle_loader
+  default directory crsctl_dir
+  access parameters
+  (
+    
+    RECORDS DELIMITED BY NEWLINE CHARACTERSET UTF8
+    DISABLE_DIRECTORY_LINK_CHECK
+    READSIZE 8388608
+    skip 1
+    fields  (
+Resource_Name position(1:40) char(40),                           
+Resource_Type position(41:35) char(35),                      
+Target        position(76:20)  char(20),      
+State         position(96:50) char(50),
+Run_Date      position(146:10) CHAR(10) DATE_FORMAT DATE MASK "YYYY-MM-DD"  
+)
+  )
+ 
+location (crsctl_dir:'stout_crsct.txt') 
+)
+
+select node, LISTAGG(res, ',') WITHIN GROUP (ORDER BY node) AS resource_name from (
+select REGEXP_SUBSTR(state, '[^on ]+$') node, regexp_substr(upper(resource_name),'\.(.*?)\.',1,1,null,1)||substr(state,-1) res,  a.* from db_node a 
+where (state like 'ONLINE%' or state like 'INTERME%')
+order by a.resource_name,state
+) q
+group by node 
