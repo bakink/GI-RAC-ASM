@@ -38,9 +38,9 @@ Run_Date      position(146:10) CHAR(10) DATE_FORMAT DATE MASK "YYYY-MM-DD"
 location (crsctl_dir:'stout_crsct.txt') 
 )
 
-select node, LISTAGG(res, ',') WITHIN GROUP (ORDER BY node) AS resource_name from (
+select node, LISTAGG(res, ',') WITHIN GROUP (ORDER BY node) AS resource_name,count(*) DB_CNT from (
 select REGEXP_SUBSTR(state, '[^on ]+$') node, regexp_substr(upper(resource_name),'\.(.*?)\.',1,1,null,1)||substr(state,-1) res,  a.* from db_node a 
 where (state like 'ONLINE%' or state like 'INTERME%')
 order by a.resource_name,state
 ) q
-group by node 
+group by node  
