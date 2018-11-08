@@ -1,0 +1,98 @@
+
+--https://oracledba.blogspot.com/2018/11/orphaned-files-in-asm.html
+
+SET VERIFY OFF
+
+SET LINESIZE 200
+SET SERVEROUTPUT ON
+SET PAGESIZE 50000
+
+DECLARE
+   cmd   CLOB;
+BEGIN
+   FOR c IN (SELECT name Diskgroup
+               FROM V$ASM_DISKGROUP)
+   LOOP
+      FOR l
+         IN (SELECT 'rm ' || files files
+               FROM
+                    (SELECT '+' || c.Diskgroup || files files, TYPE
+                       FROM (    SELECT UPPER
+                                        (
+                                           SYS_CONNECT_BY_PATH (aa.name, '/')
+                                        )
+                                           files
+                                      , aa.reference_index
+                                      , b.TYPE
+                                   FROM (SELECT file_number
+                                              , alias_directory
+                                              , name
+                                              , reference_index
+                                              , parent_index
+                                           FROM v$asm_alias) aa
+                                      , (SELECT parent_index
+                                           FROM (SELECT parent_index
+                                                   FROM v$asm_alias
+                                                  WHERE     group_number =
+                                                               (SELECT group_number
+                                                                  FROM v$asm_diskgroup
+                                                                 WHERE name =
+                                                                          c.Diskgroup)
+                                                        AND alias_index = 0)) a
+                                      , (SELECT file_number, TYPE
+                                           FROM (SELECT file_number, TYPE
+                                                   FROM v$asm_file
+                                                  WHERE group_number =
+                                                           (SELECT group_number
+                                                              FROM v$asm_diskgroup
+                                                             WHERE name =
+                                                                      c.Diskgroup)))
+                                        b
+                                  WHERE     aa.file_number = b.file_number(+)
+                                        AND aa.alias_directory = 'N'
+                                        AND b.TYPE IN
+                                               ('DATAFILE'
+                                              , 'ONLINELOG'
+                                              , 'CONTROLFILE'
+                                              , 'TEMPFILE')
+                             START WITH aa.PARENT_INDEX = a.parent_index
+                             CONNECT BY PRIOR aa.reference_index =
+                                           aa.parent_index)
+                      WHERE SUBSTR
+                            (
+                               files
+                             , INSTR (files, '/', 1, 1)
+                             ,   INSTR (files, '/', 1, 2)
+                               - INSTR (files, '/', 1, 1)
+                               + 1
+                            ) =
+                               (SELECT dbname
+                                  FROM (SELECT    '/'
+                                               || UPPER (db_unique_name)
+                                               || '/'
+                                                  dbname
+                                          FROM v$database))
+                     MINUS
+                     (SELECT UPPER (name) files, 'DATAFILE' TYPE
+                        FROM v$datafile
+                      UNION ALL
+                      SELECT UPPER (name) files, 'TEMPFILE' TYPE
+                        FROM v$tempfile
+                      UNION ALL
+                      SELECT UPPER (name) files, 'CONTROLFILE' TYPE
+                        FROM v$controlfile
+                       WHERE name LIKE '+' || c.Diskgroup || '%'
+                      UNION ALL
+                      SELECT UPPER (name), 'CONTROLFILE' TYPE
+                        FROM v$datafile_copy
+                       WHERE deleted = 'NO'
+                      UNION ALL
+                      SELECT UPPER (MEMBER) files, 'ONLINELOG' TYPE
+                        FROM v$logfile
+                       WHERE MEMBER LIKE '+' || c.Diskgroup || '%')))
+      LOOP
+         DBMS_OUTPUT.put_line (l.files);
+      END LOOP;
+   END LOOP;
+END;
+/
