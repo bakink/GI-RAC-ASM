@@ -23,6 +23,14 @@ root ile
 
 /u01/app/12.2.0.1/grid/bin/srvctl add vip -node alzx4dbadm03 -netnum 3 -address 10.70.5.41/255.255.255.0/eth5
 
+/u01/app/12.2.0.1/grid/bin/srvctl add vip -node alzx4dbadm03 -netnum 2 -address 10.70.3.149/255.255.255.0/eth3
+/u01/app/12.2.0.1/grid/bin/srvctl start vip -vip alzx4dbadm03_2
+
+--infiniband
+/u01/app/12.2.0.1/grid/bin/srvctl add vip -node alzx4dbadm03 -netnum 4 -address 192.168.10.53/255.255.252.0
+/u01/app/12.2.0.1/grid/bin/srvctl start vip -vip alzx4dbadm03_4
+
+
 oracle ile
 
 srvctl config vip -node alzx4dbadm03
