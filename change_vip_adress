@@ -1,0 +1,210 @@
+
+
+sqlplus / as sysdba
+. .grid.env
+srvctl stop -vip -h
+srvctl stat res -t |grep vip
+crsctl stat res -t |grep vip
+srvctl config vip -node alzx4dbadm01
+srvctl stop vip -node alzx4dbadm03 -vip alzx4dbadm03_2
+srvctl stop vip -vip alzx4dbadm03_2
+srvctl stop vip -vip alzx4dbadm03_3
+ifconfig
+history
+history |tail -30
+
+
+
+srvctl stop vip -vip alzx4dbadm01_2
+srvctl stop vip -vip alzx4dbadm01_3
+srvctl stop vip -vip alzx4dbadm02_2
+srvctl stop vip -vip alzx4dbadm02_3
+srvctl stop vip -vip alzx4dbadm03_2
+srvctl stop vip -vip alzx4dbadm03_3
+srvctl stop vip -vip alzx4dbadm04_2
+srvctl stop vip -vip alzx4dbadm04_3
+
+
+
+
+1216  2018-12-22 23:16:00 ifconfig -a
+1217  2018-12-22 23:17:38 cat ifcfg-eth3
+1218  2018-12-22 23:17:49 ping 10.70.35.254
+1219  2018-12-22 23:19:18 vi ifcfg-eth5
+1220  2018-12-22 23:20:48 ifdown eth5
+1221  2018-12-22 23:20:52 ifup eth5
+1222  2018-12-22 23:21:04 ifconfig -a
+1223  2018-12-22 23:21:48 pwd
+1224  2018-12-22 23:22:15 exit
+1225  2018-12-22 23:38:30 ifconfig
+1226  2018-12-22 23:38:53 su - roracle
+1227  2018-12-22 23:38:55 su - oracle
+1228  2018-12-22 23:42:03 which srvctl
+1229  2018-12-22 23:42:39 /u01/app/12.2.0.1/grid/bin/srvctl modify network -k 2 -S 10.70.35.0/255.255.255.0/eth3
+1230  2018-12-22 23:42:53 /u01/app/12.2.0.1/grid/bin/srvctl config network -netnum 2
+1231  2018-12-22 23:43:21 /u01/app/12.2.0.1/grid/bin/srvctl modify network -k 3 -S 10.70.37.0/255.255.255.0/eth5
+1232  2018-12-22 23:43:26 /u01/app/12.2.0.1/grid/bin/srvctl config network -netnum 3
+1233  2018-12-22 23:44:02 history |tail -20
+
+
+
+
+/u01/app/12.2.0.1/grid/bin/srvctl modify network -k 3 -S 10.70.37.0/255.255.255.0/eth5
+/u01/app/12.2.0.1/grid/bin/srvctl config network -netnum 3
+
+
+1231  2018-12-22 23:43:21 /u01/app/12.2.0.1/grid/bin/srvctl modify network -k 3 -S 10.70.37.0/255.255.255.0/eth5
+1232  2018-12-22 23:43:26 /u01/app/12.2.0.1/grid/bin/srvctl config network -netnum 3
+1233  2018-12-22 23:44:02 history |tail -20
+[root@alzx4dbadm04:~]#
+[root@alzx4dbadm04:~]#
+[root@alzx4dbadm04:~]#
+[root@alzx4dbadm04:~]# srvctl modify vip -n alzx4dbadm04 -address^C
+[root@alzx4dbadm04:~]# nslookup alzx4dbadm03_2.vip
+^C
+[root@alzx4dbadm04:~]# nslookup alzx4dbadm03_2-vip
+;; Got SERVFAIL reply from 10.70.206.1, trying next server
+Server:         10.70.206.2
+Address:        10.70.206.2#53
+
+** server can't find alzx4dbadm03_2-vip: SERVFAIL
+
+[root@alzx4dbadm04:~]#
+[root@alzx4dbadm04:~]#
+[root@alzx4dbadm04:~]# srvctl modify vip -n alzx4dbadm04 -k 2 -A 10.70.35.58/255.255.255.0/eth3
+-bash: srvctl: command not found
+[root@alzx4dbadm04:~]#  /u01/app/12.2.0.1/grid/bin/srvctl modify vip -n alzx4dbadm04 -k 2 -A 10.70.35.58/255.255.255.0/eth3
+[root@alzx4dbadm04:~]#
+[root@alzx4dbadm04:~]#
+[root@alzx4dbadm04:~]#  /u01/app/12.2.0.1/grid/bin/srvctl modify vip -n alzx4dbadm04 -k 3 -A 10.70.37.58/255.255.255.0/eth5
+[root@alzx4dbadm04:~]#
+[root@alzx4dbadm04:~]#
+[root@alzx4dbadm04:~]#
+[root@alzx4dbadm04:~]# /u01/app/12.2.0.1/grid/bin/srvctl start vip^C
+[root@alzx4dbadm04:~]# su - oracle
+oracle@alzx4dbadm04|~]$
+
+srvctl start vip -vip alzx4dbadm01_2
+srvctl start vip -vip alzx4dbadm01_3
+srvctl start vip -vip alzx4dbadm02_2
+srvctl start vip -vip alzx4dbadm02_3
+srvctl config vip -vip alzx4dbadm04_2
+srvctl start vip -vip alzx4dbadm04_3
+
+
+srvctl start vip -vip alzx4dbadm01_2
+srvctl start vip -vip alzx4dbadm01_3
+srvctl start vip -vip alzx4dbadm02_2
+srvctl start vip -vip alzx4dbadm02_3
+srvctl start vip -vip alzx4dbadm03_2
+srvctl start vip -vip alzx4dbadm03_3
+srvctl start vip -vip alzx4dbadm04_2
+srvctl start vip -vip alzx4dbadm04_3
+
+
+/u01/app/12.2.0.1/grid/bin/srvctl modify vip -n alzx4dbadm03 -k 2 -A 10.70.35.56/255.255.255.0/eth3
+/u01/app/12.2.0.1/grid/bin/srvctl modify vip -n alzx4dbadm03 -k 3 -A 10.70.37.56/255.255.255.0/eth5
+
+/u01/app/12.2.0.1/grid/bin/srvctl modify vip -n alzx4dbadm02 -k 2 -A 10.70.35.54/255.255.255.0/eth3
+/u01/app/12.2.0.1/grid/bin/srvctl modify vip -n alzx4dbadm02 -k 3 -A 10.70.37.54/255.255.255.0/eth5
+
+/u01/app/12.2.0.1/grid/bin/srvctl modify vip -n alzx4dbadm01 -k 2 -A 10.70.35.52/255.255.255.0/eth3
+/u01/app/12.2.0.1/grid/bin/srvctl modify vip -n alzx4dbadm01 -k 3 -A 10.70.37.52/255.255.255.0/eth5
+
+-*-*-*-*-*-*-
+
+
+
+x4 tnsnmames.ora vip adresleri değişecek.
+
+x6 tnsnames.ora değişecek vip adresleri.
+
+erişimler sağlanacak.
+
+
+
+
+oracle 12c home larında da tnsnmames.ora dosyalarında düzenleme. network network2 network3 
+
+
+
+
+dataguard:
+                
+                  (ADDRESS = (PROTOCOL = TCP)(HOST = 10.70.5.39)(PORT = 1923))   10.70.37.52
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 10.70.5.40)(PORT = 1923))      10.70.37.54
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 10.70.5.41)(PORT = 1923))      10.70.37.56
+   (ADDRESS = (PROTOCOL = TCP)(HOST = 10.70.5.42)(PORT = 1923))     10.70.37.58
+
+
+%s/10.70.5.39/10.70.37.52/g
+%s/10.70.5.40/10.70.37.54/g
+%s/10.70.5.41/10.70.37.56/g:
+%s/10.70.5.42/10.70.37.58/g
+
+
+
+
+backup:
+
+  (DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.70.3.147)(PORT = 1071)))
+     (DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.70.3.148)(PORT = 1071)))
+     (DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.70.3.149)(PORT = 1071)))
+     (DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.70.3.150)(PORT = 1071)))
+
+%s/10.70.3.147/10.70.35.52/g
+%s/10.70.3.148/10.70.35.54/g
+%s/10.70.3.149/10.70.35.56/g
+%s/10.70.3.150/10.70.35.58/g
+
+
+
+-*-**-*-*
+
+
+OPUSX6_DG =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 10.70.5.35)(PORT = 1923))
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 10.70.5.36)(PORT = 1923))
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 10.70.5.37)(PORT = 1923))
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 10.70.5.38)(PORT = 1923))
+    (LOAD_BALANCE = yes)
+    (CONNECT_DATA =
+
+
+%s/10.70.37.52/10.70.5.35/g  
+%s/10.70.37.54/10.70.5.36/g  
+%s/10.70.37.56/10.70.5.37/g  
+%s/10.70.37.58/10.70.5.38/g  
+
+
+
+-*-*-*-*
+
+alzx4dbadm01@+ASM1|~]$srvctl stop listener -l LISTENER_DG
+alzx4dbadm01@+ASM1|~]$srvctl start listener -l LISTENER_DG
+
+
+
+alzx4dbadm03@+ASM3|~]$lsnrctl status LISTENER_DG
+
+LSNRCTL for Linux: Version 12.2.0.1.0 - Production on 23-DEC-2018 01:34:51
+
+Copyright (c) 1991, 2016, Oracle.  All rights reserved.
+
+Connecting to (DESCRIPTION=(ADDRESS=(PROTOCOL=IPC)(KEY=LISTENER_DG)))
+STATUS of the LISTENER
+------------------------
+Alias                     LISTENER_DG
+Version                   TNSLSNR for Linux: Version 12.2.0.1.0 - Production
+Start Date                23-DEC-2018 01:10:10
+Uptime                    0 days 0 hr. 24 min. 40 sec
+Trace Level               off
+Security                  ON: Local OS Authentication
+SNMP                      OFF
+Listener Parameter File   /u01/app/12.2.0.1/grid/network/admin/listener.ora
+Listener Log File         /u01/app/oracle/diag/tnslsnr/alzx4dbadm03/listener_dg/alert/log.xml
+Listening Endpoints Summary...
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=ipc)(KEY=LISTENER_DG)))
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=10.70.37.56)(PORT=1923)))
+
