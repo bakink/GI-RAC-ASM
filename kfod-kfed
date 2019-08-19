@@ -1,0 +1,2 @@
+--check disk headers, all are CANDIDATE
+$ORACLE_HOME/bin/kfod status=TRUE asm_diskstring='/dev/oracleasm/*' disks=all dscvgroup=TRUE
