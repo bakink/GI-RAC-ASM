@@ -1,2 +1,11 @@
 
 --How To Gather/Backup ASM Metadata In A Formatted Manner version 10.1, 10.2, 11.1, 11.2 and 12.1? (Doc ID 470211.1)
+
+--https://ronnyegner.wordpress.com/2009/10/07/useful-asm-scripts-and-queries/
+--Combined ASM Disk and ASM Diskgroup information
+select dg.name dg_name, dg.state dg_state, dg.type, d.disk_number dsk_no,
+d.path, d.mount_status, d.FAILGROUP, d.state,d.total_mb,d.free_mb 
+from v$asm_diskgroup dg, v$asm_disk d
+where dg.group_number=d.group_number
+and dg.name='DENEME'
+order by dg_name, dsk_no;
