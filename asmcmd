@@ -1,0 +1,5 @@
+--https://docs.oracle.com/database/121/OSTMG/GUID-87325E5D-C073-45BE-B377-1A3DEB4FA744.htm#OSTMG95749
+--Updating the Oracle ASM ASM_DISKSTRING Parameter for Oracle ASM Filter Driver Disks
+
+$ORACLE_HOME/bin/asmcmd dsset 'AFD:*','/dev/rdsk/mydisks/*'
+$ORACLE_HOME/bin/srvctl modify asm -d '/dev/*','/dev/mapper/*'
