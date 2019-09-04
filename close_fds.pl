@@ -2,7 +2,7 @@
 --ASM 11.2.0.2 Is Not Releasing File Descriptors After Drop or Dismount Diskgroup. (Doc ID 1306574.1)
 --http://blog.itpub.net/17252115/viewspace-1442634/
 --https://www.freelists.org/post/oracle-l/close-fdspl-perl-script,1
-
+--http://rajakaparthi.blogspot.com/2014/06/disks-of-dropped-diskgroup-are-still.html
 
 #!/usr/local/bin/perl
 # 
