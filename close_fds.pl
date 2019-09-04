@@ -1,3 +1,9 @@
+--https://www.performatune.com/en/migrating-asm-diskgroups-to-another-storage-without-downtime/
+--ASM 11.2.0.2 Is Not Releasing File Descriptors After Drop or Dismount Diskgroup. (Doc ID 1306574.1)
+--http://blog.itpub.net/17252115/viewspace-1442634/
+--https://www.freelists.org/post/oracle-l/close-fdspl-perl-script,1
+
+
 #!/usr/local/bin/perl
 # 
 # $Header: gitools/src/asm/scripts/close_fds.pl asolisg_closefds/7 2012/07/24 14:58:42 asolisg Exp $
