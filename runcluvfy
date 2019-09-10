@@ -1,0 +1,3 @@
+--https://asanga-pradeep.blogspot.com/2019/09/installing-19c-193-rac-on-rhel-7-using.html
+
+./runcluvfy.sh stage -pre crsinst -n rhel71,rhel72 -r 19 -osdba asmdba -osoper asmoper -asm -asmgrp asmadmin -presence local -asmdev /dev/oracleasm/ocr1,/dev/oracleasm/ocr2,/dev/oracleasm/ocr3,/dev/oracleasm/gimr,/dev/oracleasm/data1,/dev/oracleasm/fra1 -crshome /opt/app/19.x.0/grid -fixup  -orainv oinstall -method root
