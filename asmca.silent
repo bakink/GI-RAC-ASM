@@ -7,3 +7,12 @@ asmca -silent -configureASM \
   -diskList '/dev/sde','/dev/sdf' \
   -redundancy EXTERNAL \
   -au_size 4 
+
+asmca -silent -configureASM \
+  -sysAsmPassword mypassword \
+  -asmsnmpPassword mypassword \
+  -diskString '/dev/*'
+  -diskGroupName DATA \
+  -diskList '/dev/sd*' \
+  -redundancy EXTERNAL \
+  -au_size 4   
