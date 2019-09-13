@@ -1,0 +1,11 @@
+
+/etc/udev/rules.d/99-ora-permission.rules                        
+içine de                        
+her disk için şu satırdan yazıyosun:
+
+KERNEL=="sdb",OWNER="grid",GROUP="oinstall",MODE="0660",ACTION=="add|change"                        
+
+sonra                        
+ start_udev 
+komutu                        
+syntax'a dikkat, makine patlar :D
