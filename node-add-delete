@@ -1,4 +1,7 @@
 
+--http://www.peasland.net/2016/04/26/recreate-bad-rac-node/
+
+
 CLSRSC-670 Error from root.sh When Adding a Node (Doc ID 2353529.1)
 Oracle Restart 12.2: root.sh Fails with Site name invalid Message and Failed to create keys in the OLR, rc = 100"CLSRSC-188" (Doc ID 2323421.1)
 11gR2 "crsctl query css votedisk" Fails "'css' is an invalid argument" (Doc ID 1149723.1)
