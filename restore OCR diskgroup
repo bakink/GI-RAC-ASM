@@ -1,0 +1,10 @@
+--http://dineshbandelkar.com/how-to-restore-ocr-diskgroup-after-1-of-the-disk-formatted-and-backups-not-accessible/
+
+How to Restore ASM Based OCR when OCR backup is located in ASM diskgroup? (Doc ID 2569847.1)
+This amdu extract command will create a OCR backup image file on the current directory. Now the OCR can be restored using the procedure given in below Doc ID
+How to Restore ASM Based OCR After Complete Loss of the CRS Diskgroup on Linux/Unix Systems (Doc ID 1062983.1)
+
+The spfile and voting disks were successfully moved however, owing to no guidelines for moving the ASM password file, moving of ASM Password file was missed.
+
+ASM password file has been recreated using below Doc ID
+How to recreate shared ASM password file in 12c GI cluster (Doc ID 1929673.1)
