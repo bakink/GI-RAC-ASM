@@ -1,0 +1,155 @@
+--https://dbaclass.com/article/oracle-local-registryolr-rac/
+
+
+ORACLE LOCAL REGISTRY(OLR) contains node-specific information required by OHASD . Every node has its own dedicated OLR file.(not shared between the nodes).
+
+As OCRs files are present in ASM diskgroup, While starting the CRS, it wont be able to Access OCR file to find the cluster resource information. Because at this point ASM instance would also be down. So at this point OLR file ( which is present at normal file system) is accessed to start the required resources.
+
+ 
+
+1. The default location of OLR:
+
+1
+2
+3
+4
+ 
+ 
+$GRID_HOME/cdata/*olr
+ 
+2.View the available backups of OLR:
+
+1
+2
+3
+4
+5
+6
+ 
+ 
+$GRID_HOME/bin/ocrconfig -local -showbackup
+ 
+prod60-2     2017/02/06 13:10:06     /crsapp/app/oracle/product/grid12c/cdata/prod60-2/backup_20170206_131006.olr     0
+ 
+2. Take the backup of OLR manually: ( Need to done from ROOT user)
+
+
+1
+2
+3
+4
+5
+6
+7
+8
+ 
+ 
+root# /crsapp/app/oracle/product/grid12c/bin/ocrconfig  -local -manualbackup
+ 
+prod60-2     2018/11/18 16:52:15     /crsapp/app/oracle/product/grid12c/cdata/prod60-2/backup_20181118_165215.olr     3059807995
+ 
+prod60-2     2017/02/06 13:10:06     /crsapp/app/oracle/product/grid12c/cdata/prod60-2/backup_20170206_131006.olr     0
+ 
+3. Verify integrity of the OLR
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+ 
+ 
+cluvfy comp olr
+ 
+Verifying OLR integrity
+ 
+Checking OLR integrity...
+Check of existence of OLR configuration file "/var/opt/oracle/olr.loc" passed
+Check of attributes of OLR configuration file "/var/opt/oracle/olr.loc" passed
+ 
+WARNING:
+This check does not verify the integrity of the OLR contents. Execute 'ocrcheck -local' as a privileged user to verify the contents of OLR.
+ 
+OLR integrity check passed
+ 
+Verification of OLR integrity was successful.
+ 
+4. Check the current OLR location:
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+ 
+ 
+$GRID_HOME/bin/ocrcheck -local
+Status of Oracle Local Registry is as follows :
+         Version                  :          4
+         Total space (kbytes)     :     409568
+         Used space (kbytes)      :       1108
+         Available space (kbytes) :     408460
+         ID                       : 1832119036
+         Device/File Name         : /crsapp/app/oracle/product/grid12c/cdata/prod60-2.olr
+                                    Device/File integrity check succeeded
+ 
+         Local registry integrity check succeeded
+ 
+         Logical corruption check succeeded
+ 
+5. View OLR in text format:
+
+1
+2
+3
+4
+ 
+ 
+$GRID_HOME/bin/ocrdump -local -stdout
+ 
+6. Restore OLR from backup:
+
+In case OLR is corrupted, Restore it from backup.
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+ 
+ 
+crsctl stop crs
+ 
+ocrconfig -local -restore /crsapp/app/oracle/product/grid12c/cdata/prod60-2/backup_20181118_165215.olr
+ 
+ocrconfig -local
+ 
+crsctl start crs
+ 
