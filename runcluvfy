@@ -1,3 +1,13 @@
 --https://asanga-pradeep.blogspot.com/2019/09/installing-19c-193-rac-on-rhel-7-using.html
 
 ./runcluvfy.sh stage -pre crsinst -n rhel71,rhel72 -r 19 -osdba asmdba -osoper asmoper -asm -asmgrp asmadmin -presence local -asmdev /dev/oracleasm/ocr1,/dev/oracleasm/ocr2,/dev/oracleasm/ocr3,/dev/oracleasm/gimr,/dev/oracleasm/data1,/dev/oracleasm/fra1 -crshome /opt/app/19.x.0/grid -fixup  -orainv oinstall -method root
+
+
+--https://alexandremartidba.wordpress.com/2020/05/12/cvu-19-6-is-available-to-help-in-the-upgrade-process/
+
+/u01/grid/19.5/bin/cluvfy stage -pre crsinst -upgrade -rolling \
+       -src_crshome /u01/grid/12.1.0 \
+       -dest_crshome /grid/product/19.5 \
+       -dest_version 19.5.0.0.0 \
+       -verbose
+
