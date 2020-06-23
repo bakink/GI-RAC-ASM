@@ -1,1 +1,3 @@
 --https://www.fernandosimon.com/blog/19c-grid-infrastructure-upgrade/
+
+./gridSetup.sh -applyRU /u01/patches/grid-19c/30116789 -J-Doracle.install.mgmtDB=false -J-Doracle.install.mgmtDB.CDB=false -J Doracle.install.crs.enableRemoteGIMR=false
