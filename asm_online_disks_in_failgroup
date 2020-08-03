@@ -1,0 +1,9 @@
+
+
+SQL> alter diskgroup dg_ural_data online disks in failgroup failgroup2;
+
+Diskgroup altered.
+
+SQL> 
+SQL> 
+SQL> select * from gv$asm_operation;
