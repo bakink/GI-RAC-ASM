@@ -1,0 +1,5 @@
+
+--https://infohub.delltechnologies.com/l/oracle-asm-on-scaleio-best-practices-4/asm-stripesize-coarse-and-fine-grained-striping-4
+
+SQL> select name, stripe from V$ASM_TEMPLATE;
+SQL> ALTER DISKGROUP MYDATA ALTER TEMPLATE onlinelog ATTRIBUTES (FINE);
