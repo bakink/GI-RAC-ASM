@@ -1,3 +1,17 @@
+
+create diskgroup DG_URAL_DATA normal redundancy 
+failgroup failgroup1 disk
+'/dev/rdsk/c0t60000970000297600423533030313841d0s0',
+'/dev/rdsk/c0t60000970000297600423533030313843d0s0',
+'/dev/rdsk/c0t60000970000297600423533030313842d0s0'
+failgroup failgroup2 disk
+'/dev/rdsk/c0t60000970000297600422533030313445d0s0',
+'/dev/rdsk/c0t60000970000297600422533030313530d0s0',
+'/dev/rdsk/c0t60000970000297600422533030313735d0s0'
+ATTRIBUTE 'au_size'='4M', 'compatible.asm' = '19.0.0.0.0', 'compatible.rdbms' = '11.2.0.0.0';
+
+
+
 ALTER DISKGROUP DG_URAL_DATA add 
 failgroup failgroup2 disk 
 '/dev/rdsk/c0t60000970000297600422533030314538d0s0'
