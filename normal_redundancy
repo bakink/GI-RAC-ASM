@@ -1,0 +1,5 @@
+ALTER DISKGROUP DG_URAL_DATA add 
+failgroup failgroup2 disk 
+'/dev/rdsk/c0t60000970000297600422533030314538d0s0'
+failgroup failgroup1 disk 
+'/dev/rdsk/c0t60000970000297600423533030323842d0s0' rebalance power 11;
