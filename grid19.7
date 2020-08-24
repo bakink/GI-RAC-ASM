@@ -1,0 +1,602 @@
+-------------------------ural altay oracle grid 19.7 db 11.2.0.4 kurulum
+
+oracle@owarchstby:OARCSTBY:/u01/oracle/setup#mkdir /tmp/zip
+oracle@owarchstby:OARCSTBY:/u01/oracle/setup#cp *.zip /tmp/zip; cp patches.tar /tmp/zip; chmod -R 777 /tmp/zip
+
+oracle@ural:KBLIVE:/u01/oracle/setup#scp xu087558@10.59.13.120:/tmp/zip/*.zip .
+oracle@ural:KBLIVE:/u01/oracle/setup#scp xu087558@10.59.13.120:/tmp/zip/*.tar .
+
+scp /u01/oracle/setup/*.* 10.59.12.101:/u01/oracle/setup 
+scp /u01/oracle/setup/*.* 10.59.12.110:/u01/oracle/setup 
+
+root
+dcli -g ~/dbs_group -l root mkdir -p /u01/oracle/19.0.0/grid/
+dcli -g ~/dbs_group -l root chown oracle:dba /u01/oracle/19.0.0/grid
+
+oracle@ural
+cd /u01/oracle/setup; unzip SOLARIS.SPARC64_193000_grid_home.zip -d /u01/oracle/19.0.0/grid/ ## unzip -q /u01/oracle/setup/SOLARIS.SPARC64_193000_grid_home.zip -d /u01/app/19.0.0.0/grid
+!!!19.7 patch 30899722
+unset ORACLE_HOME ORACLE_BASE ORACLE_SID
+export DISPLAY=:0
+export DISPLAY=10.61.18.42:0.0
+cd /u01/oracle/setup/; unzip p30899722_190000_SOLARIS64.zip ## unzip -q /u01/oracle/setup/p30899722_190000_SOLARIS64.zip -d /u01/oracle/setup/
+!!! /u01/oracle/19.0.0/grid/ diger node da boş olacak
+cd /u01/oracle/19.0.0/grid/ 
+./gridSetup.sh -applyRU /u01/oracle/setup/30899722 -J-Doracle.install.mgmtDB=false -J-Doracle.install.mgmtDB.CDB=false -J Doracle.install.crs.enableRemoteGIMR=false
+
+export DISPLAY=10.61.18.42:0.0
+19c Grid Installation
+Configuration Options -> Configure Oracle Grid infrastructure for a New Cluster
+Configure an Oracle Standalone Cluster
+Cluster name : ykbcore
+SCAN Name : ykbcore-scan.sys.yapikredi.com.tr
+SCAN Port : 1931
+public hostname : ural.sys.yapikredi.com.tr altay.sys.yapikredi.com.tr
+virtual hostname : ural-vip.sys.yapikredi.com.tr altay-vip.sys.yapikredi.com.tr
+10.59.12.0 public
+10.60.42.0 do not use
+10.10.10.0 asm & private
+20.20.20.0 asm & private
+configure grid infrastructure management repository -> no
+Create ASM diskgroup -> DG_URAL_SYSTEM (I=capslock i)
+redundancy High
+asm config au size 4 mb , data 4mb, rest of 1 mb
+asm filter driver -> no
+use this password for theses account
+register with enterprise manager cloud -> uncheck
+all groups dba
+oracle_base /u01/app/oracle
+Inventory Directory: /u01/app/oraInventory
+automatically run configuration scripts -> check -> enter root password
+
+reverse dns kontrol
+oracle@altay:~$ host 10.59.12.100
+Host 100.12.59.10.in-addr.arpa. not found: 3(NXDOMAIN)
+oracle@altay:~$ host 10.59.12.101
+Host 101.12.59.10.in-addr.arpa. not found: 3(NXDOMAIN)
+oracle@altay:~$ host 10.59.12.103
+Host 103.12.59.10.in-addr.arpa. not found: 3(NXDOMAIN)
+
+root@ural:~# host 10.59.12.103
+103.12.59.10.in-addr.arpa domain name pointer ykbcore-scan.sys.yapikredi.com.tr.
+root@ural:~# host 10.59.12.102
+102.12.59.10.in-addr.arpa domain name pointer ykbcore-scan.sys.yapikredi.com.tr.
+root@ural:~# host 10.59.12.104
+104.12.59.10.in-addr.arpa domain name pointer ykbcore-scan.sys.yapikredi.com.tr.
+
+root@ural:~# host 10.59.12.101
+101.12.59.10.in-addr.arpa domain name pointer altay.sys.yapikredi.com.tr.
+root@ural:~# host 10.59.12.100
+100.12.59.10.in-addr.arpa domain name pointer ural.sys.yapikredi.com.tr.
+root@ural:~# host 10.59.12.105 
+105.12.59.10.in-addr.arpa domain name pointer ural-vip.sys.yapikredi.com.tr.
+root@ural:~# host 10.59.12.106 
+106.12.59.10.in-addr.arpa domain name pointer altay-vip.sys.yapikredi.com.tr.
+
+
+Selam, ilom ip leri haip ile cakışıyor, bunları degistirebilir misiniz? ignore ettik
+root@ural:~# ilomconfig list interconnect
+Interconnect
+============
+State: enabled Type: USB Ethernet
+SP Interconnect IP Address: 169.254.182.76
+Host Interconnect IP Address: 169.254.182.77
+
+ilomconfig modify interconnect --hostipaddress=169.254.230.77
+ilomconfig modify interconnect --hostipaddress=169.254.230.78
+
+install
+/u01/oracle/19.0.0/grid/bin/crsctl stat res -t -init
+oracle@ural:~$ /u01/oracle/19.0.0/grid/bin/cluvfy stage -post crsinst -collect cluster -n all
+
+
+
+### Oracle 11.2.0.4 Db Software Kurulumu
+Her iki makinede 
+mkdir -p /u01/app/oracle/product/11.2.0/dbhome_1
+
+/u01/oracle/19.0.0/grid/oui/bin/runInstaller -silent -ignoreSysPrereqs -updateNodeList ORACLE_HOME=/u01/oracle/19.0.0/grid "CLUSTER_NODES={ural,altay}" CRS=true LOCAL_NODE=ural
+/u01/oracle/19.0.0/grid/oui/bin/runInstaller -silent -ignoreSysPrereqs -updateNodeList ORACLE_HOME=/u01/oracle/19.0.0/grid "CLUSTER_NODES={ural,altay}" CRS=true LOCAL_NODE=altay
+
+-- setup dosyaları oracle userı ile unzip edilir birinci makine de
+cd /u01/oracle/setup
+unzip p13390677_112040_SOLARIS64_1of7.zip
+unzip p13390677_112040_SOLARIS64_2of7.zip
+unset ORACLE_HOME ORACLE_BASE ORACLE_SID
+export DISPLAY=:0
+export DISPLAY=10.61.18.42:0.0
+
+/u01/oracle/setup/database/runInstaller
+uncheck security update
+skip software updates
+install database software only
+Oracle RAC database installation
+ONLY ENGLISH
+Enterprise edition
+/u01/app/oracle
+/u01/app/oracle/product/11.2.0/dbhome_1 /u01/app/oracle/product/11.2.0/dbhome_2
+dba dba -> preq checks -> install
+/u01/app/oracle/product/11.2.0/dbhome_1/root.sh
+
+
+oracle@ural:~$ cat .DB.env 
+#export ORACLE_SID=KBLIVE01
+export ORACLE_HOME=/u01/app/oracle/product/11.2.0/dbhome_1
+export PATH=$ORACLE_HOME/bin:$ORACLE_HOME/OPatch:$PATH
+export NLS_LANG=AMERICAN_AMERICA.WE8ISO8859P9
+export LD_LIBRARY_PATH=$ORACLE_HOME/lib:/usr/local/lib
+export LD_LIBRARY_PATH_64=$ORACLE_HOME/lib
+export TNS_ADMIN=$ORACLE_HOME/network/admin
+PS1='$LOGNAME@$HOSTNAME:$ORACLE_SID:$PWD#';export PS1 
+
+oracle@ural:~$ cat .ASM.env 
+export ORACLE_SID=+ASM1
+export ORACLE_HOME=/u01/oracle/19.0.0/grid
+export PATH=$ORACLE_HOME/bin:$ORACLE_HOME/OPatch:$PATH
+export NLS_LANG=AMERICAN_AMERICA.WE8ISO8859P9
+export LD_LIBRARY_PATH=$ORACLE_HOME/lib:/usr/local/lib
+export LD_LIBRARY_PATH_64=$ORACLE_HOME/lib
+export TNS_ADMIN=$ORACLE_HOME/network/admin
+PS1='$LOGNAME@$HOSTNAME:$ORACLE_SID:$PWD#';export PS1 
+
+
+
+##SINGLE NODE BY NODE DB PATCH
+echo $DISPLAY; unset DISPLAY
+cd /u01/oracle/setup; tar xvf patches.tar 
+##unzip p6880880_112000_SOLARIS64.zip
+cd /u01/oracle/setup/patches; mv -f $ORACLE_HOME/OPatch $ORACLE_HOME/OPatch_OLD; cp -R OPatch $ORACLE_HOME/OPatch
+##unzip p17982832_112047_SOLARIS64.zip; unzip p18740837_11204170718_SOLARIS64.zip; unzip p22842151_11204171017_SOLARIS64.zip; unzip p27314206_11204170718_SOLARIS64.zip
+unzip p27338049_112040_SOLARIS64.zip 
+cd 27338049
+opatch apply -local
+
+dalaman 
+scp /global/khome25/oracle/patch/oneoff/*.* oracle@ural.sys.yapikredi.com.tr:/u01/oracle/setup/patches/oneoff
+scp /global/khome25/oracle/p*.zip oracle@ural.sys.yapikredi.com.tr:/u01/oracle/setup/patches/oneoff
+
+ural
+scp /u01/oracle/setup/patches/oneoff/*.* altay.sys.yapikredi.com.tr:/u01/oracle/setup/patches/oneoff
+scp /u01/oracle/setup/patches/oneoff/*.* toros.sys.yapikredi.com.tr:/u01/oracle/setup/patches/oneoff
+
+##248 gün patch
+cd /u01/oracle/setup/patches/oneoff ; unzip p18740837_11204170718_SOLARIS64.zip ; cd 18740837 ; opatch apply -local
+opatch lsinventory -bugs_fixed | grep 18740837
+18740837 18740837 Tue Jun 09 19:08:26 EET 2020 USAGE OF UNDEFINED BEHAVIOR IS SSLEQ AND LTMEQ 
+
+##!!!Kblive enqueue SQ-SV ve row cache lock sorun hk. Bug 26173206 & SR 3-1491944750
+cd /u01/oracle/setup/patches/oneoff ; unzip p26276784_11204161018_SOLARIS64.zip ; cd 26276784 ; opatch apply -local
+$ORACLE_HOME/OPatch/opatch lsinventory -bugs_fixed | grep 26276784 
+26276784 26276784 Thu Sep 21 03:38:01 GMT+03:00 2017DIAGNOSTIC PATCH FOR BUG 26173206
+
+##LCK0 IS HUNG LMHB TERMINATING THE INSTANCE DUE TO 
+cd /u01/oracle/setup/patches/oneoff; unzip p22470443_11204180417_SOLARIS64.zip ; cd 22470443 ; opatch apply -local
+opatch lsinventory -bugs_fixed | grep 22470443
+22470443 22470443 Fri Apr 03 17:40:17 EEST 2020 LCK0 IS HUNG LMHB TERMINATING THE INSTANCE DUE TO 
+
+###GGATE PATCH GGATEPATCH
+cd /u01/oracle/setup/patches/oneoff; unzip p30424648_11204171017_SOLARIS64.zip ; cd 30424648 ; opatch apply -local
+opatch lsinventory -bugs_fixed | grep 30424648
+opatch lsinventory | grep 30424648 
+
+###!!!!HWM Contention bug 
+cd /u01/oracle/setup/patches/oneoff; unzip p18080199_11204180116_SOLARIS64.zip ; cd 18080199 ; opatch apply -local
+
+cd /u01/oracle/setup/patches/oneoff; unzip p22842151_11204171017_SOLARIS64.zip ; cd 22842151 ; opatch apply -local; ##opatch rollback -id 22842151 -local
+cd /u01/oracle/setup/patches/oneoff; unzip p17982832_112047_SOLARIS64.zip ; cd 17982832 ; opatch apply -local; ##opatch rollback -id 17982832 -local
+
+opatch rollback -id 27314206 -local -> Conflict with Composite Patch 27338049 (cd /u01/oracle/setup/patches/27314206 ; opatch apply -local)
+opatch rollback -id 16090440 -local -> Conflict with Composite Patch 27338049 (cd /u01/oracle/setup/patches/16090440 ; opatch apply -local)
+
+
+export DISPLAY=10.61.18.42:0.0; cd; . .ASM.env; asmca
+
+423: URAL
+422: ALTAY
+426: TOROS
+
+Name
+DG_URAL_ARCH normal au size 1MB
+DG_URAL_DATA normal au size 4MB
+DG_URAL_REDO_CONTROL01 normal au size 1MB
+DG_URAL_REDO_CONTROL02 normal au size 1MB
+DG_URAL_TEMP normal au size 1MB
+
+
+
+reH21a!JPY
+
+
+
+------------HÜSEYİN ÇENGEL ACS
+(11:32:35) Huseyin şunu söyledi:
+root
+dcli -g ~/dbs_group -l root mkdir -p /u01/app/19.0.0.0/grid
+dcli -g ~/dbs_group -l root chown oracle:oinstall /u01/app/19.0.0.0/grid
+
+oracle
+unzip -q /u01/app/oracle/patchdepot/LINUX.X64_193000_grid_home.zip -d /u01/app/19.0.0.0/grid
+unzip -q /u01/app/oracle/patchdepot/p30116789_190000_Linux-x86-64.zip -d /u01/app/oracle/patchdepot/
+
+./runcluvfy.sh stage -pre crsinst -upgrade -rolling -src_crshome /u01/app/18.0.0.0/grid -dest_crshome /u01/app/19.0.0.0/grid -dest_version 19.0.0.0.0 -fixup -verbose
+
+unset ORACLE_HOME ORACLE_BASE ORACLE_SID
+export DISPLAY=:0
+cd /u01/app/19.0.0.0/grid
+./gridSetup.sh -applyRU /u01/app/oracle/patchdepot/30116789 -J-Doracle.install.mgmtDB=false -J-Doracle.install.mgmtDB.CDB=false -J Doracle.install.crs.enableRemoteGIMR=false
+
+
+dcli -l oracle -g ~/dbs_group mkdir -p /u01/app/oracle/product/19.0.0.0/dbhome_1
+unzip -q /u01/app/oracle/patchdepot/LINUX.X64_193000_db_home.zip -d /u01/app/oracle/product/19.0.0.0/dbhome_1
+
+unset ORACLE_HOME ORACLE_BASE ORACLE_SID
+export DISPLAY=:0
+cd /u01/app/oracle/product/19.0.0.0/dbhome_1
+./runInstaller -applyRU /u01/app/oracle/patchdepot/30116789
+
+(12:50:33) Huseyin şunu söyledi:
+baslamadan once sunu calistiralim
+
+(12:50:53) Huseyin şunu söyledi:
+/runcluvfy.sh stage -pre crsinst -fixup -n ural,altay
+
+oracle@ural:~$ /u01/oracle/19.0.0/grid/bin/cluvfy stage -post crsinst -collect cluster -n all
+
+Verifying Node Connectivity ...
+Verifying Hosts File ...PASSED
+Verifying subnet mask consistency for subnet "20.20.20.0" ...PASSED
+Verifying subnet mask consistency for subnet "10.10.10.0" ...PASSED
+Verifying subnet mask consistency for subnet "10.59.12.0" ...PASSED
+Verifying Node Connectivity ...PASSED
+Verifying Multicast or broadcast check ...PASSED
+Verifying Time zone consistency ...PASSED
+Verifying Cluster Manager Integrity ...PASSED
+Verifying User Mask ...PASSED
+Verifying Cluster Integrity ...PASSED
+Verifying OCR Integrity ...WARNING (PRVG-6017)
+Verifying CRS Integrity ...
+Verifying Clusterware Version Consistency ...PASSED
+Verifying CRS Integrity ...PASSED
+Verifying Node Application Existence ...PASSED
+Verifying Single Client Access Name (SCAN) ...
+Verifying DNS/NIS name service 'ykbcore-scan.sys.yapikredi.com.tr' ...
+Verifying Name Service Switch Configuration File Integrity ...PASSED
+Verifying DNS/NIS name service 'ykbcore-scan.sys.yapikredi.com.tr' ...PASSED
+Verifying Single Client Access Name (SCAN) ...PASSED
+Verifying OLR Integrity ...PASSED
+Verifying Voting Disk ...PASSED
+Verifying ASM Integrity ...PASSED
+Verifying ASM disk group free space ...PASSED
+Verifying User Not In Group "root": oracle ...PASSED
+Verifying Clock Synchronization ...
+CTSS is in Observer state. Switching over to clock synchronization checks using NTP
+
+Verifying Network Time Protocol (NTP) ...
+Verifying '/etc/inet/ntp.conf' ...PASSED
+Verifying Daemon 'ntpd' ...PASSED
+Verifying NTP daemon or service using UDP port 123 ...PASSED
+Verifying NTP daemon is synchronized with at least one external time source ...PASSED
+Verifying Network Time Protocol (NTP) ...PASSED
+Verifying Clock Synchronization ...PASSED
+Verifying VIP Subnet configuration check ...PASSED
+Verifying Network configuration consistency checks ...PASSED
+Verifying File system mount options for path GI_HOME ...PASSED
+Verifying Access control attributes for /var/tmp/.oracle ...PASSED
+Verifying Access control attributes for %OCRCONFIGDIR%/maps ...PASSED
+
+Post-check for cluster services setup was successful. 
+
+Warnings were encountered during execution of CVU verification request "stage -post crsinst".
+
+Verifying OCR Integrity ...WARNING
+PRVG-6017 : OCR backup is located in the same disk group "+DG_URAL_SYSTEM" as OCR.
+
+CVU operation performed: stage -post crsinst
+Date: Jun 9, 2020 3:37:07 PM
+CVU home: /u01/oracle/19.0.0/grid/
+User: oracle
+oracle@ural:~$ 
+
+(13:42:41) Siz şunu söylediniz:
+Node Connectivity - This is a prerequisite condition to test whether connectivity exists amongst all the nodes. The connectivity is being tested for the subnets "10.59.12.0,10.10.10.0,20.20.20.0"
+
+Verification WARNING result on node: ural Details: 
+- PRVG-11069 : IP address "169.254.182.77" of network interface "sp-host0" on the node "ural" would conflict with HAIP usage. - Cause: One or more network interfaces have IP addresses in the range (169.254.*.*), the range used by HAIP which can create routing conflicts. - Action: Make sure there are no IP addresses in the range (169.254.*.*) on any network interfaces. 
+
+Verification WARNING result on node: altay Details: 
+- PRVG-11069 : IP address "169.254.182.77" of network interface "sp-host0" on the node "altay" would conflict with HAIP usage. - Cause: One or more network interfaces have IP addresses in the range (169.254.*.*), the range used by HAIP which can create routing conflicts. - Action: Make sure there are no IP addresses in the range (169.254.*.*) on any network interfaces.
+
+(13:59:41) Huseyin şunu söyledi:
+ilomconfig list interconnect
+
+(14:00:44) Huseyin şunu söyledi:
+@ root@pwet1:~# ilomconfig modify interconnect --hostipaddress=169.254.230.77
+@ root@pwet2:~# ilomconfig modify interconnect --hostipaddress=169.254.230.78
+
+(14:02:18) Siz şunu söylediniz:
+network interfaces CLASS/TYPE attribute - This task verifies that the PUBLIC network interfaces CLASS/TYPE attribute is not set to the unsupported value 'inherited' on the non-global zone cluster nodes. Error: 
+- PRVG-11250 : The check "network interfaces CLASS/TYPE attribute" was not performed because it needs 'root' user privileges. - Cause: In running the pre-requisite test suite for a planned system management operation, the indicated check was not performed because it requires root user privileges, and the root user credentials had not been supplied. - Action: To include the check, reissue the request providing the required credentials for the root user.
+
+(14:10:39) Huseyin şunu söyledi:
+vip leri de aynı sekilde kontrol edermisin
+
+(15:59:15) Siz şunu söylediniz:
+Node Application Existence - This test checks the existence of Node Applications on the system. Error: 
+- PRVF-4037 : CRS is not installed on any of the nodes - Cause: Could not identify a CRS installation on any node. - Action: Ensure that CRS is installed on all the nodes participating in the operation. 
+Operation Failed on Nodes: [ural, altay] 
+Verification result of failed node: ural Details: - PRVF-7593 : CRS is not found to be installed on node "ural" - Cause: Could not identify CRS installation on the specified node. - Action: Ensure that CRS is installed on the specified node. 
+Verification result of failed node: altay Details: - PRVF-7593 : CRS is not found to be installed on node "altay" - Cause: Could not identify CRS installation on the specified node. - Action: Ensure that CRS is installed on the specified node. 
+
+(16:14:34) Huseyin şunu söyledi:
+/u01/oui/bin/runInstaller -silent -ignoreSysPrereqs -updateNodeList ORACLE_HOME=Grid_home "CLUSTER_NODES={comma_separated_list_of_nodes}" CRS=true LOCAL_NODE=local_node
+
+oracle@altay:~$ cd /u01/app/oraInventory/
+oracle@altay:/u01/app/oraInventory$ cd ContentsXML/
+oracle@altay:/u01/app/oraInventory/ContentsXML$ more inventory.xml 
+
+
+
+
+
+12.2.0.7.0
+2.1.0.6.0
+
+
+
+
+
+
+
+oracle@altay:/u01/app/oraInventory/ContentsXML$ 
+
+/u01/oracle/19.0.0/grid/oui/bin/runInstaller -silent -ignoreSysPrereqs -updateNodeList ORACLE_HOME=/u01/oracle/19.0.0/grid "CLUSTER_NODES={ural,altay}" CRS=true LOCAL_NODE=ural
+/u01/oracle/19.0.0/grid/oui/bin/runInstaller -silent -ignoreSysPrereqs -updateNodeList ORACLE_HOME=/u01/oracle/19.0.0/grid "CLUSTER_NODES={ural,altay}" CRS=true LOCAL_NODE=altay
+
+oracle@altay:~$ cat /u01/app/oraInventory/ContentsXML/inventory.xml 
+
+
+
+
+
+12.2.0.7.0
+2.1.0.6.0
+
+
+
+
+
+
+
+
+
+
+
+
+
+PRVG-1101 : SCAN name "null" failed to resolve - Cause: An attempt to resolve specified SCAN name to a list of IP addresses failed because SCAN could not be resolved in DNS or GNS using 'nslookup'. - Action: Check whether the specified SCAN name is correct. If SCAN name should be resolved in DNS, check the configuration of SCAN name in DNS. If it should be resolved in GNS make sure that GNS resource is online. 
+PRVF-4657 : Name resolution setup check for "null" (IP address: 127.0.0.1) failed - Cause: Inconsistent IP address definitions found for the SCAN name identified using DNS and configured name resolution mechanism(s). - Action: Look up the SCAN name with nslookup, and make sure the returned IP addresses are consistent with those defined in NIS and /etc/hosts as configured in /etc/nsswitch.conf by reconfiguring the latter. Check the Name Service Cache Daemon (/usr/sbin/nscd) by clearing its cache and restarting it. 
+
+oracle@ural:~/setup/database$ /u01/oracle/19.0.0/grid/bin/cluvfy comp scan -verbose
+Verifying Single Client Access Name (SCAN) ...
+SCAN Name Node Running? ListenerName Port Running? 
+---------------- ------------ ------------ ------------ ------------ ------------
+ykbcore-scan.sys.yapikredi.com.tr altay true LISTENER_SCAN1 1931 true 
+ykbcore-scan.sys.yapikredi.com.tr ural true LISTENER_SCAN2 1931 true 
+ykbcore-scan.sys.yapikredi.com.tr ural true LISTENER_SCAN3 1931 true 
+
+Checking TCP connectivity to SCAN listeners...
+
+Node ListenerName TCP connectivity? 
+------------ ------------------------ ------------------------
+altay LISTENER_SCAN1 yes 
+altay LISTENER_SCAN2 yes 
+altay LISTENER_SCAN3 yes 
+
+Verifying DNS/NIS name service 'ykbcore-scan.sys.yapikredi.com.tr' ...
+Verifying Name Service Switch Configuration File Integrity ...PASSED
+
+SCAN Name IP Address Status Comment 
+------------ ------------------------ ------------------------ ----------
+ykbcore-scan.sys.yapikredi.com.tr 10.59.12.102 passed 
+ykbcore-scan.sys.yapikredi.com.tr 10.59.12.103 passed 
+ykbcore-scan.sys.yapikredi.com.tr 10.59.12.104 passed 
+Verifying DNS/NIS name service 'ykbcore-scan.sys.yapikredi.com.tr' ...PASSED
+Verifying Single Client Access Name (SCAN) ...PASSED
+
+Verification of SCAN was successful. 
+
+CVU operation performed: SCAN
+Date: Jun 9, 2020 5:00:59 PM
+CVU home: /u01/oracle/19.0.0/grid/
+User: oracle
+oracle@ural:~/setup/database$ 
+
+
+INFO: instantiating '/u01/app/oracle/product/11.2.0/dbhome_1/ctx/admin/dr0ulib.sql.sbs'.
+oracle@ural:/u01/app/oraInventory/logs$ /u01/app/oracle/product/11.2.0/dbhome_1/bin/cluvfy comp scan -verbose
+
+Verifying Single Client Access Name (SCAN) ...
+SCAN Name Node Running? ListenerName Port Running? 
+---------------- ------------ ------------ ------------ ------------ ------------
+ykbcore-scan.sys.yapikredi.com.tr altay true LISTENER_SCAN1 1931 true 
+ykbcore-scan.sys.yapikredi.com.tr ural true LISTENER_SCAN2 1931 true 
+ykbcore-scan.sys.yapikredi.com.tr ural true LISTENER_SCAN3 1931 true 
+
+Checking TCP connectivity to SCAN listeners...
+
+Node ListenerName TCP connectivity? 
+------------ ------------------------ ------------------------
+altay LISTENER_SCAN1 yes 
+altay LISTENER_SCAN2 yes 
+altay LISTENER_SCAN3 yes 
+
+Verifying DNS/NIS name service 'ykbcore-scan.sys.yapikredi.com.tr' ...
+Verifying Name Service Switch Configuration File Integrity ...PASSED
+
+SCAN Name IP Address Status Comment 
+------------ ------------------------ ------------------------ ----------
+ykbcore-scan.sys.yapikredi.com.tr 10.59.12.102 passed 
+ykbcore-scan.sys.yapikredi.com.tr 10.59.12.103 passed 
+ykbcore-scan.sys.yapikredi.com.tr 10.59.12.104 passed 
+Verifying DNS/NIS name service 'ykbcore-scan.sys.yapikredi.com.tr' ...PASSED
+Verifying Single Client Access Name (SCAN) ...PASSED
+
+Verification of SCAN was successful. 
+
+CVU operation performed: SCAN
+Date: Jun 9, 2020 5:19:26 PM
+CVU home: /u01/oracle/19.0.0/grid/
+User: oracle
+oracle@ural:/u01/app/oraInventory/logs$ 
+
+
+INFO: *********************************************
+INFO: Single Client Access Name (SCAN): This test verifies the Single Client Access Name configuration.
+INFO: Severity:IGNORABLE
+INFO: OverallStatus:VERIFICATION_FAILED
+
+------------HÜSEYİN ÇENGEL ACS
+
+-------------------------ural altay oracle grid 19.7 db 11.2.0.4 kurulum
+
+
+
+-------------------------toros single oracle grid 19.7 db 11.2.0.4 kurulum
+
+oracle@owarchstby:OARCSTBY:/u01/oracle/setup#mkdir /tmp/zip
+oracle@owarchstby:OARCSTBY:/u01/oracle/setup#cp *.zip /tmp/zip; cp patches.tar /tmp/zip; chmod -R 777 /tmp/zip
+
+oracle@ural:KBLIVE:/u01/oracle/setup#scp xu087558@10.59.13.120:/tmp/zip/*.zip .
+oracle@ural:KBLIVE:/u01/oracle/setup#scp xu087558@10.59.13.120:/tmp/zip/*.tar .
+
+scp /u01/oracle/setup/*.* 10.59.12.101:/u01/oracle/setup 
+scp /u01/oracle/setup/*.* 10.59.12.110:/u01/oracle/setup 
+
+oracle@toros
+cd /u01/oracle/setup; unzip SOLARIS.SPARC64_193000_grid_home.zip -d /u01/oracle/19.0.0/grid/ ## unzip -q /u01/oracle/setup/SOLARIS.SPARC64_193000_grid_home.zip -d /u01/app/19.0.0.0/grid
+!!!19.7 patch 30899722
+unset ORACLE_HOME ORACLE_BASE ORACLE_SID
+export DISPLAY=:0
+export DISPLAY=10.61.18.42:0.0
+cd /u01/oracle/setup/; unzip p30899722_190000_SOLARIS64.zip ## unzip -q /u01/oracle/setup/p30899722_190000_SOLARIS64.zip -d /u01/oracle/setup/
+cd /u01/oracle/19.0.0/grid/ 
+./gridSetup.sh -applyRU /u01/oracle/setup/30899722 -J-Doracle.install.mgmtDB=false -J-Doracle.install.mgmtDB.CDB=false -J Doracle.install.crs.enableRemoteGIMR=false
+
+export DISPLAY=10.61.18.42:0.0
+19c Grid Installation
+Configure Oracle Grid infrastructure for a Standalone Server (Oracle Restart)
+disk group name: DG_TOROS_DATA (I=capslock i)
+redundancy external
+asm au size 4 mb for config + data , rest of 1 mb for TEMP,ARCHIVELOG,REDO etc
+uncheck asm filter driver
+use same passwords for these accounts
+register with enterprise manager cloud -> uncheck
+all groups dba
+oracle_base /u01/app/oracle
+ignore grid home was placed in the installation owner's home dir
+ignore the selected oracle home is outside of oracle base
+Inventory Directory: /u01/app/oraInventory
+automatically run configuration scripts -> check -> enter root password
+install
+
+reH21a!JPY
+
+
+### Oracle 11.2.0.4 Db Software Kurulumu
+mkdir -p /u01/app/oracle/product/11.2.0/dbhome_1
+
+-- setup dosyaları oracle userı ile unzip edilir birinci makine de
+cd /u01/oracle/setup
+unzip p13390677_112040_SOLARIS64_1of7.zip
+unzip p13390677_112040_SOLARIS64_2of7.zip
+unset ORACLE_HOME ORACLE_BASE ORACLE_SID
+export DISPLAY=:0
+export DISPLAY=10.61.18.42:0.0
+
+/u01/oracle/setup/database/runInstaller
+uncheck security update
+skip software updates
+install database software only
+Single instance database installation ( Oracle RAC database installation or RAC One Node database installation)
+ONLY ENGLISH
+Enterprise edition
+/u01/app/oracle
+/u01/app/oracle/product/11.2.0/dbhome_1 /u01/app/oracle/product/11.2.0/dbhome_2
+dba dba -> preq checks -> install
+/u01/app/oracle/product/11.2.0/dbhome_1/root.sh
+
+
+oracle@ural:~$ cat .DB.env 
+#export ORACLE_SID=KBLIVE
+export ORACLE_HOME=/u01/app/oracle/product/11.2.0/dbhome_1
+export PATH=$ORACLE_HOME/bin:$ORACLE_HOME/OPatch:$PATH
+export NLS_LANG=AMERICAN_AMERICA.WE8ISO8859P9
+export LD_LIBRARY_PATH=$ORACLE_HOME/lib:/usr/local/lib
+export LD_LIBRARY_PATH_64=$ORACLE_HOME/lib
+export TNS_ADMIN=$ORACLE_HOME/network/admin
+PS1='$LOGNAME@$HOSTNAME:$ORACLE_SID:$PWD#';export PS1 
+
+oracle@ural:~$ cat .ASM.env 
+export ORACLE_SID=+ASM
+export ORACLE_HOME=/u01/oracle/19.0.0/grid
+export PATH=$ORACLE_HOME/bin:$ORACLE_HOME/OPatch:$PATH
+export NLS_LANG=AMERICAN_AMERICA.WE8ISO8859P9
+export LD_LIBRARY_PATH=$ORACLE_HOME/lib:/usr/local/lib
+export LD_LIBRARY_PATH_64=$ORACLE_HOME/lib
+export TNS_ADMIN=$ORACLE_HOME/network/admin
+PS1='$LOGNAME@$HOSTNAME:$ORACLE_SID:$PWD#';export PS1 
+
+
+
+##SINGLE NODE DB PATCH
+echo $DISPLAY; unset DISPLAY
+cd /u01/oracle/setup; tar xvf patches.tar 
+##unzip p6880880_112000_SOLARIS64.zip
+cd /u01/oracle/setup/patches; mv -f $ORACLE_HOME/OPatch $ORACLE_HOME/OPatch_OLD; cp -R OPatch $ORACLE_HOME/OPatch
+##unzip p17982832_112047_SOLARIS64.zip; unzip p18740837_11204170718_SOLARIS64.zip; unzip p22842151_11204171017_SOLARIS64.zip; unzip p27314206_11204170718_SOLARIS64.zip
+unzip p27338049_112040_SOLARIS64.zip 
+cd 27338049
+opatch apply -local
+
+ural
+scp /u01/oracle/setup/patches/oneoff/*.* toros.sys.yapikredi.com.tr:/u01/oracle/setup/patches/oneoff
+
+##248 gün patch
+cd /u01/oracle/setup/patches/oneoff ; unzip p18740837_11204170718_SOLARIS64.zip ; cd 18740837 ; opatch apply -local
+opatch lsinventory -bugs_fixed | grep 18740837
+18740837 18740837 Tue Jun 09 19:08:26 EET 2020 USAGE OF UNDEFINED BEHAVIOR IS SSLEQ AND LTMEQ 
+
+##!!!Kblive enqueue SQ-SV ve row cache lock sorun hk. Bug 26173206 & SR 3-1491944750
+cd /u01/oracle/setup/patches/oneoff ; unzip p26276784_11204161018_SOLARIS64.zip ; cd 26276784 ; opatch apply -local
+$ORACLE_HOME/OPatch/opatch lsinventory -bugs_fixed | grep 26276784 
+26276784 26276784 Thu Sep 21 03:38:01 GMT+03:00 2017DIAGNOSTIC PATCH FOR BUG 26173206
+
+##LCK0 IS HUNG LMHB TERMINATING THE INSTANCE DUE TO 
+cd /u01/oracle/setup/patches/oneoff; unzip p22470443_11204180417_SOLARIS64.zip ; cd 22470443 ; opatch apply -local
+opatch lsinventory -bugs_fixed | grep 22470443
+22470443 22470443 Fri Apr 03 17:40:17 EEST 2020 LCK0 IS HUNG LMHB TERMINATING THE INSTANCE DUE TO 
+
+###GGATE PATCH GGATEPATCH
+cd /u01/oracle/setup/patches/oneoff; unzip p30424648_11204171017_SOLARIS64.zip ; cd 30424648 ; opatch apply -local
+opatch lsinventory -bugs_fixed | grep 30424648
+opatch lsinventory | grep 30424648 
+
+###!!!!HWM Contention bug 
+cd /u01/oracle/setup/patches/oneoff; unzip p18080199_11204180116_SOLARIS64.zip ; cd 18080199 ; opatch apply -local
+
+cd /u01/oracle/setup/patches/oneoff; unzip p22842151_11204171017_SOLARIS64.zip ; cd 22842151 ; opatch apply -local; ##opatch rollback -id 22842151 -local
+cd /u01/oracle/setup/patches/oneoff; unzip p17982832_112047_SOLARIS64.zip ; cd 17982832 ; opatch apply -local; ##opatch rollback -id 17982832 -local
+
+opatch rollback -id 27314206 -local -> Conflict with Composite Patch 27338049 (cd /u01/oracle/setup/patches/27314206 ; opatch apply -local)
+opatch rollback -id 16090440 -local -> Conflict with Composite Patch 27338049 (cd /u01/oracle/setup/patches/16090440 ; opatch apply -local)
+
+
+export DISPLAY=10.61.18.42:0.0
+cd ; . .ASM.env ; asmca
+
+DG_TOROS_ARCH external au size 1MB
+DG_TOROS_TEMP external au size 1MB
+DG_TOROS_REDO_CONTROL01 external au size 1MB
+DG_TOROS_REDO_CONTROL02 external au size 1MB
+
+
