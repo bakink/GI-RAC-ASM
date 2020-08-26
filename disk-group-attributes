@@ -1,0 +1,5 @@
+--http://asmsupportguy.blogspot.com/2014/05/disk-group-attributes.html
+
+asmcmd lsattr -G PLAY –l
+
+SELECT name, value FROM V$ASM_ATTRIBUTE WHERE group_number = 11;
