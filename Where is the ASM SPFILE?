@@ -1,0 +1,68 @@
+--https://blog.dbi-services.com/where-is-the-asm-spfile/
+In the previous blog post, to the question “where is the ASM SPFILE” I answered by running ‘asmcmd spget’. But this is available only if the ASM instance is started. If you have corrupted your SPFILE (and it’s easy to do it) you can start with a local PFILE and the CREATE SPFILE= FROM PFILE. But then you get the location of the local one you used. If you need to know the shared location, let’s see the different places where you can find it.
+
+First I set the environment for the ASM instance.
+
+
+[grid@racp1vm1 ~]$ . oraenv <<< +ASM1
+ORACLE_SID = [grid] ? The Oracle base has been set to /u01/app/grid
+If the ASM instance is up you can get the SPFILE location from ASMCMD:
+
+
+[grid@racp1vm1 ~]$ asmcmd spget
++CRS_DG/ws-dbi-scan1/ASMPARAMETERFILE/registry.253.905527691
+or from SQL*Plus:
+
+
+[grid@racp1vm1 ~]$ sqlplus -s / as sysasm
+show parameter spfile
+ 
+NAME                                 TYPE        VALUE
+------------------------------------ ----------- ------------------------------
+spfile                               string      +CRS_DG/ws-dbi-scan1/ASMPARAME
+                                                 TERFILE/registry.253.905527691
+If the ASM instance us up but started with another SPFILE (or PFILE) you can search for a SPFILE in all diskgroups:
+
+
+[grid@racp1vm1 ~]$ asmcmd find --type PARAMETERFILE '*' '*'
++CRS_DG/_MGMTDB/PARAMETERFILE/spfile.268.905529015
++DATA/RACDB/PARAMETERFILE/spfile.269.906247759
++DATA/RACDB/spfileRACDB.ora
+But if ASM instance is not up, let’s see where we can find its location.
+
+From GPnP tool
+The cluster needs to know the SPFILE location in order to start the ASM instance, and for this purpose, location is stored in the GPnP profile
+
+
+[grid@racp1vm1 ~]$ gpnptool get -o- | xmllint --format - | grep SPFile
+Success.
+  <orcl:ASM-Profile id="asm" DiscoveryString="" SPFile="+CRS_DG/ws-dbi-scan1/ASMPARAMETERFILE/registry.253.905527691" Mode="remote"/>
+Of course you can get it directly from the GPnP profile xml file
+
+
+[grid@racp1vm1 ~]$ xmllint --shell $ORACLE_HOME/gpnp/$HOSTNAME/profiles/peer/profile.xml <<< "cat //*[@SPFile]/@SPFile"
+ SPFile="+CRS_DG/ws-dbi-scan1/ASMPARAMETERFILE/registry.253.905527691"
+If you messed-up the GPnP profile, you may want to find the previous value.
+
+From alert.log
+If the ASM instance has been startup previously, which is probably the case, you can see the location of SPFILE in the alert.log:
+
+
+[grid@racp1vm1 ~]$ adrci exec="set home +asm ; show alert -tail 1000" | grep "parameter setting"
+Using parameter settings in server-side spfile +CRS_DG/ws-dbi-scan1/ASMPARAMETERFILE/registry.253.905527691
+Using parameter settings in server-side spfile +CRS_DG/ws-dbi-scan1/ASMPARAMETERFILE/registry.253.905527691
+Using parameter settings in server-side spfile +CRS_DG/ws-dbi-scan1/ASMPARAMETERFILE/registry.253.905527691
+Using parameter settings in server-side spfile +CRS_DG/ws-dbi-scan1/ASMPARAMETERFILE/registry.253.905527691
+$ORACLE_HOME/dbs
+What is important to know is that there is nothing in $ORACLE_HOME/dbs
+
+
+[grid@racp1vm1 ~]$ ls $ORACLE_HOME/dbs
+ab_+ASM1.dat  hc_+APX1.dat  hc_+ASM1.dat  hc_-MGMTDB.dat  id_+ASM1.dat  init-MGMTDB.ora  init.ora  lk_MGMTDB
+and the ASM instance startup looks up there only if not found from the GPnP profile.
+
+Backup the ASM SPFILE
+It’s always a good idea to backup the SPFILE, in the same way you backup the OCR, and GPnP profile.
+
+
+[grid@racp1vm1 ~]$ asmcmd spbackup +CRS_DG/ws-dbi-scan1/ASMPARAMETERFILE/registry.253.905527691 /tmp/asmspfile.bak
