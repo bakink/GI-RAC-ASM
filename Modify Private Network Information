@@ -1,0 +1,164 @@
+--How to Modify Private Network Information in Oracle Clusterware (Doc ID 283684.1)
+C. For 12c and 18c Oracle Clusterware with Flex ASM
+
+
+YKYRAC HAIP reconfig
+
+/u01/app/oracle/diag/crs/ykyrac1/crs/trace/ohasd_orarootagent_root.trc
+
+ipmp konfigürasyonu sonucunda net1 kalıyor, net2 haip konfigürasyonundan çıkartılacak.
+
+
+1. profile.xml yedeğini al.
+
+cp /u01/app/19.0.0/grid/gpnp/ykyrac1/profiles/peer/profile.xml /u01/app/19.0.0/grid/gpnp/ykyrac1/profiles/peer/profile.xml.26102020
+
+
+cp /u01/app/19.0.0/grid/gpnp/ykyrac2/profiles/peer/profile.xml /u01/app/19.0.0/grid/gpnp/ykyrac2/profiles/peer/profile.xml.26102020
+
+2.  Ensure Oracle Clusterware is running on ALL cluster nodes in the cluster
+
+oifcfg getif 
+net0  10.59.4.0  global  public
+net1  192.168.1.0  global  cluster_interconnect,asm
+net2  192.168.2.0  global  cluster_interconnect,asm
+
+oifcfg iflist
+net0  10.59.4.0
+net1  192.168.1.0
+net1  169.254.0.0
+net2  192.168.2.0
+net2  169.254.16.0
+
+ifconfig -a
+lo0: flags=2001000849<UP,LOOPBACK,RUNNING,MULTICAST,IPv4,VIRTUAL> mtu 8232 index 1
+        inet 127.0.0.1 netmask ff000000 
+net0: flags=100001000843<UP,BROADCAST,RUNNING,MULTICAST,IPv4,PHYSRUNNING> mtu 1500 index 2
+        inet 10.59.4.101 netmask ffffff00 broadcast 10.59.4.255
+net0:1: flags=100001040843<UP,BROADCAST,RUNNING,MULTICAST,DEPRECATED,IPv4,PHYSRUNNING> mtu 1500 index 2
+        inet 10.59.4.103 netmask ffffff00 broadcast 10.59.4.255
+net0:4: flags=100001040843<UP,BROADCAST,RUNNING,MULTICAST,DEPRECATED,IPv4,PHYSRUNNING> mtu 1500 index 2
+        inet 10.59.4.107 netmask ffffff00 broadcast 10.59.4.255
+net0:5: flags=100001040843<UP,BROADCAST,RUNNING,MULTICAST,DEPRECATED,IPv4,PHYSRUNNING> mtu 1500 index 2
+        inet 10.59.4.106 netmask ffffff00 broadcast 10.59.4.255
+net1: flags=100001000843<UP,BROADCAST,RUNNING,MULTICAST,IPv4,PHYSRUNNING> mtu 1500 index 4
+        inet 192.168.1.11 netmask ffffff00 broadcast 192.168.1.255
+net1:1: flags=100001000843<UP,BROADCAST,RUNNING,MULTICAST,IPv4,PHYSRUNNING> mtu 1500 index 4
+        inet 169.254.3.49 netmask fffff000 broadcast 169.254.15.255
+net2: flags=100001000843<UP,BROADCAST,RUNNING,MULTICAST,IPv4,PHYSRUNNING> mtu 1500 index 3
+        inet 192.168.2.11 netmask ffffff00 broadcast 192.168.2.255
+net2:1: flags=100001000843<UP,BROADCAST,RUNNING,MULTICAST,IPv4,PHYSRUNNING> mtu 1500 index 3
+        inet 169.254.20.33 netmask fffff000 broadcast 169.254.31.255
+lo0: flags=2002000849<UP,LOOPBACK,RUNNING,MULTICAST,IPv6,VIRTUAL> mtu 8252 index 1
+        inet6 ::1/128 
+net0: flags=120002004841<UP,RUNNING,MULTICAST,DHCP,IPv6,PHYSRUNNING> mtu 1500 index 2
+        inet6 fe80::214:4fff:fef9:3228/10 
+net1: flags=120002000840<RUNNING,MULTICAST,IPv6,PHYSRUNNING> mtu 1500 index 4
+        inet6 ::/0 
+net2: flags=120002000840<RUNNING,MULTICAST,IPv6,PHYSRUNNING> mtu 1500 index 3
+        inet6 ::/0 
+
+
+3. Yeni eklenecek interconnectler nodelar arasında birbirini pinglemelidir.
+
+$ ifconfig -a
+$ ping <private hostname>
+
+
+3. ASM useri ile yapılır. cluster_interconnect ve asm aynı private networkü kullandığı için birlikte eklenir.
+oifcfg setif -global ipmp0/192.168.5.0:cluster_interconnect,asm
+
+4. mevcut listener konfigürasyonunu kontrol et.
+
+srvctl config listener -asmlistener
+srvctl config asm
+
+
+srvctl config listener -asmlistener
+Name: ASMNET1LSNR_ASM
+Type: ASM Listener
+Owner: oracle
+Subnet: 192.168.1.0
+Home: <CRS home>
+End points: TCP:1525
+Listener is enabled.
+Listener is individually enabled on nodes: 
+Listener is individually disabled on nodes: 
+Name: ASMNET2LSNR_ASM
+Type: ASM Listener
+Owner: oracle
+Subnet: 192.168.2.0
+Home: <CRS home>
+End points: TCP:1526
+Listener is enabled.
+Listener is individually enabled on nodes: 
+Listener is individually disabled on nodes: 
+
+
+srvctl config asm
+ASM home: <CRS home>
+Password file: +CONFIG/orapwASM
+Backup of Password file: +CONFIG/orapwASM_backup
+ASM listener: LISTENER
+ASM instance count: 3
+Cluster ASM listener: ASMNET1LSNR_ASM,ASMNET2LSNR_ASM
+
+
+
+
+
+
+5. ASMLISTENER private networkünde değişiklik varsa yeni network konfigürasyonuyla eklenir, eski konfigürasyon kaldırılır.
+
+5a. yeni konfigürasyon eklenir.
+$ srvctl add  listener -asmlistener -l <new ASM LISTENER NAME> -subnet <new subnet>
+
+srvctl add  listener -asmlistener -l ASMNET3LSNR_ASM -subnet 192.168.5.0
+
+
+eg:
+$ srvctl add listener -asmlistener -l ASMNEWLSNR_ASM -subnet 192.168.10.0
+
+5b. eski konfigürasyonu kaldırmak için
+$ srvctl update listener -listener ASMLSNR_ASM -asm -remove -force
+$ lsnrctl stop ASMLSNR_ASM
+
+
+srvctl update listener -listener ASMNET1LSNR_ASM -asm -remove -force
+lsnrctl stop ASMNET1LSNR_ASM 
+
+6. mevcut listener konfigürasyonunu kontrol et.
+
+srvctl config listener -asmlistener
+srvctl config asm
+
+7. Shutdown Oracle Clusterware on ALL nodes and disable the Oracle Clusterware as root user:
+
+# crsctl stop crs
+# crsctl disable crs
+
+8. Make the network configuration change at OS level as required, ensure the new interface is available on all nodes after the change.
+
+$ ifconfig -a
+$ ping <private hostname>
+
+9. Enable Oracle Clusterware and restart Oracle Clusterware on all nodes as root user:
+
+# crsctl enable crs
+# crsctl start crs
+
+10. Remove the old interface if required:
+
+$ oifcfg delif -global <interfacename>[/<subnet>]
+eg:
+$ oifcfg delif -global <interfacename>0/192.168.0.0
+
+oifcfg delif -global net1/192.168.1.0
+oifcfg delif -global net2/192.168.2.0
+
+
+
+
+
+
+
