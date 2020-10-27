@@ -1,0 +1,213 @@
+
+###################################
+PUBLIC IP / VIP IP DEĞİŞİMİ
+###################################
+
+How to Modify Public Network Information including VIP in Oracle Clusterware (Doc ID 276434.1)
+Case II.  Changing public IP or VIP only without changing interface, subnet or netmask or changing MAC address only without changing anything else
+
+Case IV. Changing VIPs associated with public network change
+
+
+########################
+PUBLIC IP DEĞİŞİMİ
+########################
+
+
+Primary nodedaki veritabanlarında log gönderimi kapatılır.
+YKY veritabanında
+alter system set LOG_ARCHIVE_DEST_STATE_4=DEFER scope=both sid='*'; 
+
+GENEX veritabanında
+alter system set LOG_ARCHIVE_DEST_STATE_2=DEFER scope=both sid='*'; 
+
+(IP değişikliği yapılacak sunucularda)
+PUBLIC IP kontrol edilir. 
+ifconfig -a   <--- PUBLIC IP net0 interfaceden kontrol edilir.
+
+
+YKY ve GENEX veritabanlarında log apply kapatılır.
+ALTER DATABASE RECOVER MANAGED STANDBY DATABASE CANCEL;
+
+Her iki nodeda dekarac1 ve dekarac2 (yeni sunucularda) crs kapatılır.
+crsctl stop crs
+
+/etc/hosts dosyasında public IP değişikliği her 2 node da yapılır.
+DNS ve /etc/hosts düzenlenir.
+nslookup dekarac1
+nslookup dekarac2
+
+--yeni public IPlerin değişimi için Unix ekibi aranır, PUBLIC IP değişimi yaptırılır.
+10.59.4.111 -> 10.59.4.101	/* sadece IPler değişecek. dekarac1	  
+10.59.4.112 -> 10.59.4.102	/* sadece IPler değişecek. dekarac2	
+
+Sessionlar IP değiştiği için kopacak, yeni IPlerden sunuculara login olunur.
+
+Unix ekibinin IP değişikliği net0 üzerinden yapıldığı kontrol edilir.
+ifconfig -a  <--- PUBLIC IP net0 interfaceden kontrol edilir.
+
+Sorun görünmüyorsa crs her iki nodeda açılır.
+crsctl start crs
+
+
+#########################
+VIP DEĞİŞİMİ
+#########################
+
+--eski VIPler
+10.59.4.113	dekarac1tst-vip	dekarac1tst-vip.sys.deka.com.tr
+10.59.4.114	dekarac2tst-vip	dekarac2tst-vip.sys.deka.com.tr
+
+--VIP ipleri CRSden değiştirilecek.
+10.59.4.103	dekarac1new-vip	dekarac1new-vip.sys.deka.com.tr
+10.59.4.104	dekarac2new-vip	dekarac2new-vip.sys.deka.com.tr
+
+
+Mevcut VIP konfigürasyonuna bakılır.
+
+srvctl config nodeapps -a
+Network 1 exists
+Subnet IPv4: 10.59.4.0/255.255.255.0/net0, static
+Subnet IPv6: 
+Ping Targets: 
+Network is enabled
+Network is individually enabled on nodes: 
+Network is individually disabled on nodes: 
+VIP exists: network number 1, hosting node dekarac1
+VIP Name: dekarac1tst-vip
+VIP IPv4 Address: 10.59.4.113
+VIP IPv6 Address: 
+VIP is enabled.
+VIP is individually enabled on nodes: 
+VIP is individually disabled on nodes: 
+VIP exists: network number 1, hosting node dekarac2
+VIP Name: dekarac2tst-vip
+VIP IPv4 Address: 10.59.4.114
+VIP IPv6 Address: 
+VIP is enabled.
+VIP is individually enabled on nodes: 
+VIP is individually disabled on nodes: 
+
+
+
+Tüm VIPs ler ONLINE olmalıdır.
+
+crsctl stat res -t
+
+ora.scan1.vip
+      1        ONLINE  ONLINE       dekarac2                  STABLE
+ora.scan2.vip
+      1        ONLINE  ONLINE       dekarac1                  STABLE
+ora.scan3.vip
+      1        ONLINE  ONLINE       dekarac1                  STABLE
+ora.dekarac1.vip
+      1        ONLINE  ONLINE       dekarac1                  STABLE
+ora.dekarac2.vip
+      1        ONLINE  ONLINE       dekarac2                  STABLE
+
+
+
+VIP interfacei public interface net0 üzerinden verildiği görülmelidir.
+ifconfig -a   
+
+
+ASM useriyle VIP resourceları kapatılır.
+
+srvctl stop instance -d YKYN -n dekarac1 (optinal)
+srvctl stop instance -d YKYN -n dekarac2 (optinal)
+
+srvctl stop vip -n dekarac1 -f
+srvctl stop vip -n dekarac2 -f
+
+srvctl stop listener -n dekarac1
+srvctl stop listener -n dekarac2
+
+
+VIP resourceları OFFLINE durumda ve VIP interface down olmalıdır.
+
+crsctl stat res -t  <----- VIP ler OFFLINE olmalıdır.
+ifconfig -a      <------ VIP interface görülmemelidir.
+
+
+
+VIP hostname ve IP değişikliği YAPILIR. ********
+
+Her 2 nodeda yeni VIP hostnameleri ve IP leri /etc/hosts dosyasına girilir.
+DNS ten çözüldüğü kontrol edilir.
+nslookup dekarac1new-vip.sys.deka.com.tr
+nslookup dekarac2new-vip.sys.deka.com.tr
+
+ROOT useri ile çalıştır. 
+srvctl modify nodeapps -n dekarac1 -A dekarac1new-vip/255.255.255.0/net0
+srvctl modify nodeapps -n dekarac2 -A dekarac2new-vip/255.255.255.0/net0
+
+
+Değişiklik kontrol edilir.
+srvctl config nodeapps -a 
+
+
+ASM useriyla VIP ve listenerlar restart edilir. 
+
+srvctl start vip -n dekarac1 
+srvctl start vip -n dekarac2
+
+srvctl start listener -n dekarac1
+srvctl start listener -n dekarac2
+
+srvctl start instance -d YKYN -n dekarac1 (optinal)
+srvctl start instance -d YKYN -n dekarac2 (optinal)
+
+
+listener.ora, tnsnames.ora, LOCAL_LISTENER, REMOTE_LISTENER parametreleri VIP değişikliği yapılır. --Bunları otomatik CRSden alıyor.
+
+Primary veritabanında YKY ve GENEX veritabanlarının log apply için tnsnames.ora dosyası yeni VIPleri gösterilir.
+
+
+
+############################################
+SCAN IP değişimi
+############################################
+
+How to Update the IP Address of the SCAN VIP Resources (ora.scan{n}.vip) (Doc ID 952903.1)
+
+
+1. Before the SCAN VIPs can be changed, the entry for the SCAN name on the Domain Name Server (DNS) needs to be updated with the new IP addresses. This usually will be done by a network administrator. To check the current setting, the following command can be used:
+nslookup <scan_name>
+
+nslookup dekaracnew-scan.sys.deka.com.tr <--- eski scan name
+nslookup dekaractst-scan.sys.deka.com.tr <--- yeni scan name
+
+2. To check the current IP address(es) of the SCAN VIPs, 
+run the following commands as the root user: aşağıdaki komutları ROOT ile çalıştır.
+$GRID_HOME/bin/srvctl config scan    <---- mevcut SCAN görülür.
+
+
+3. Stop the SCAN listeners and SCAN
+$GRID_HOME/bin/srvctl stop scan_listener 
+$GRID_HOME/bin/srvctl stop scan
+
+
+4. Next refresh the SCAN VIPs with the new IP addresses from the DNS entry:
+
+. /u01/oracle/.GRID1.ENV 
+
+$GRID_HOME/bin/srvctl modify scan -n dekaracnew-scan.sys.deka.com.tr    <--- ROOT useri ile çalıştır. yeni scan verilir.
+
+
+5. To check if the SCAN VIPs have been changed, run the following command, it should now show the new IP addresses.
+$GRID_HOME/bin/srvctl config scan     <---- kontrol edilir.
+
+6. Restart SCAN & SCAN listener:
+$GRID_HOME/bin/srvctl start scan 
+$GRID_HOME/bin/srvctl start scan_listener
+
+7. Eğer veritabanı remote_listener i eski scan adında görüyorsa boş set edilir. sonrasında scan_listener restart edilir.
+alter system set remote_listener='';
+
+$GRID_HOME/bin/srvctl stop scan_listener 
+$GRID_HOME/bin/srvctl start scan_listener
+
+
+
+
+
