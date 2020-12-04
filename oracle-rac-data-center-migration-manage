@@ -1,0 +1,262 @@
+--http://abdul-hafeez-kalsekar.blogspot.com/2020/05/oracle-rac-data-center-migration-manage.html
+
+unday, November 15, 2020
+Oracle Rac Storage migration and Data center Migration
+
+    Oracle Rac Storage migration and data center migration  
+
+
+#########################################################################
+#########################################################################
+
+
+Storage Migration 
+
+Storage migration is pretty simple and online  activity . We just need to get new disk of same size .
+After new asm disk are allocated  to server  we just need to add new disk first to diskgroup . 
+Once new disk are added wait for rebalancing to complete and later we can drop old disk.
+
+Same procedure applies for Grid diskgroup 
+
+Ideally disk path are not changed , If disk path are changed we need to update asm_diskstring parameter in asm 
+
+alter system set asm_diskstring=’/dev/ORACLE/*/*’ scope=spfile sid='*';
+
+
+
+
+Below are sample commands 
+
+1) Adding new disk to diskgroup  
+
+ALTER DISKGROUP Grid add  disk '/dev/rasm_lc_flash_04'  SIZE 1g  ;  
+( for data diskgroup you can add multiple disk at one time however for grid diskgroup go one disk at a time ) 
+
+ALTER Diskgroup ASM_PERAMGC_DATA_DG3  ADD DISK
+'/dev/rhdisk149',
+'/dev/rhdisk150',
+'/dev/rhdisk151',
+'/dev/rhdisk152'
+rebalance power 6;
+
+
+
+
+2) Verify  rebalancing is completed and check if new disk mapped under diskgroup 
+
+Select * from v$asm_operation;
+
+Select header_status , group_number from v$asm_disk where path ='/dev/rasm_lc_flash_04'  ;
+
+
+3) Drop  old disk  from diskgroup . We can drop multiple disk at one time . Please note we need  to drop disk with disk name and not path .
+
+ALTER Diskgroup ASM_PERAMGC_DATA_DG3  Drop disk 
+'ASM_PSBP_TIER1_DG1_0000', 'ASM_PSBP_TIER1_DG1_0005' REBALANCE POWER 11 ; 
+
+
+
+
+
+For Oracle home binary filesystem  no action was  taken from our dba team .   Oracle home is also configured on San  , unix  team will do needful  of copying filesystem to new  and renaming filesystem. Relinking oracle home and setting up acl might be needed .
+
+
+Below is just overview what i understand Unix team did online migration of filesystem . It depends on operating system to operating system . 
+
+ Check new device which ‘ll be used after migration
+ Check LVM device which you need to migrate
+ Create PV with new added LUN device
+ Extend VG with new added PV
+ Add new mirror device to LVM.
+ Remove old disk from LVM.Before remove old disk from LVM you need to check mirror state with “lvdisplay -v” or “lvs -o+devices” command.
+ Remove old pv from Volume Group(vg).
+ Remove old pv
+
+
+################################################################################
+################################################################################
+
+
+Data center Migration
+
+It may be necessary to change or update interface names, or subnet associated with an interface if there is a network change affecting the servers
+
+There are multi ways of data center migration , in our case it was data center migration with lift and shift approach  Placing same server into new network 
+
+You need  update scan dns to point to new ip .  Making other changes  in /etc/hosts 
+
+
+
+
+Private Network : 
+
+Reference :
+Following How to Modify Private Network Information in Oracle Clusterware (Doc ID 283684.1)
+
+ Please  note that below steps are considering we are using for flex asm . 
+
+
+ 1) 
+Please take a backup of profile.xml on all cluster nodes before proceeding, as grid user:
+$ cd $GRID_HOME/gpnp//profiles/peer/
+$ cp -p profile.xml profile.xml.bk
+
+
+2) . Ensure Oracle Clusterware is running on ALL cluster nodes in the cluster
+
+3) . As grid user:
+Get the existing information. For example:
+$ oifcfg getif
+eth1 100.17.10.0 global public
+eth0 192.168.0.0 global cluster_interconnect,asm
+
+Above example shows network eth0 is used for both cluster_interconnect and ASM network.
+
+
+
+4) 
+Add the new cluster_interconnect information:
+
+$ oifcfg setif -global /:cluster_interconnect[,asm]
+
+For example:
+a. add a new interface bond0 with the same subnet
+$ oifcfg setif -global bond0/192.168.0.0:cluster_interconnect,asm
+
+b. add a new subnet with the same interface name but different subnet or new interface name
+$ oifcfg setif -global eth0/192.68.10.0:cluster_interconnect,asmor
+$ oifcfg setif -global eth3/192.168.1.96:cluster_interconnect,asm
+
+
+
+5) . As ASMLISTENER is using the private network, modifying the private network will affect 
+
+If different network is used for private network and ASM network, then modify them accordingly.
+It is required to add a new ASMLISTENER with the new network configuration. 
+Skip this step if the subnet for the ASM network is not changed.
+
+
+Add a new ASMLISTENER (for example: ASMNEWLSNR_ASM) with the new subnet, as grid user:
+$ srvctl add listener -asmlistener -l -subnet 
+eg:
+$ srvctl add listener -asmlistener -l ASMNEWLSNR_ASM -subnet 192.168.10.0
+
+
+Drop the existing ASMLISTENER (ASMLSNR_ASM in this example) and remove the dependency, as grid user:
+$ srvctl update listener -listener ASMLSNR_ASM -asm -remove -force
+$ lsnrctl stop ASMLSNR_ASM
+
+Note. -force option is required, otherwise the following error will occur:$ srvctl update listener -listener ASMLSNR_ASM -asm -remove
+PRCR-1025 : Resource ora.ASMLSNR_ASM.lsnr is still running
+$ srvctl stop listener -l ASMLSNR_ASM
+PRCR-1065 : Failed to stop resource ora.ASMLSNR_ASM.lsnr
+CRS-2529: Unable to act on 'ora.ASMLSNR_ASM.lsnr' because that would require stopping or relocating 'ora.asm', but the force option was not specified
+
+Verify the configuration
+$ srvctl config listener -asmlistener
+$ srvctl config asm
+
+
+6)   Shutdown Oracle Clusterware on ALL nodes and disable the Oracle Clusterware as root user:
+# crsctl stop crs
+# crsctl disable crs
+
+
+7)  Make the network configuration change at OS level as required, ensure the new interface is available on all nodes after the change.
+$ ifconfig -a
+
+
+8)  Enable Oracle Clusterware and restart Oracle Clusterware on all nodes as root user:
+# crsctl enable crs
+# crsctl start crs
+
+
+9)Remove the old interface if required:
+$ oifcfg delif -global [/]
+eg:
+$ oifcfg delif -global eth0/192.168.0.0
+
+
+
+
+
+Public Network : 
+
+Reference :
+How to Modify Public Network Information including VIP in Oracle Clusterware (Doc ID 276434.1)
+
+If the change is only public IP address and the new ones are still in the same subnet, nothing needs to be done on clusterware level 
+(all changes needs to be done on OS level to reflect the change). If the change involves different subnet or interface, as there is not a 'modify' option -
+you will need to delete the interface and add it back with the correct information
+
+
+oifcfg getif
+oifcfg iflist 
+
+% $CRS_HOME/bin/oifcfg/oifcfg delif -global <if_name>[/<subnet>]
+% $CRS_HOME/bin/oifcfg/oifcfg setif -global <if_name>/<subnet>:public
+
+For example:
+% $CRS_HOME/bin/oifcfg delif -global eth0/10.X.156.0
+% $CRS_HOME/bin/oifcfg setif -global eth0/10.X.166.0:public
+
+
+
+'
+
+VIP Change : 
+
+srvctl config nodeapps -a
+
+Starting with 11.2, the VIPs depend on the network resource (ora.net1.network), the OCR only records the VIP hostname or the IP address associated with the VIP resource. The network attributes (subnet/netmask/interface) are recorded with the network resource. When the nodeapps resource is modified, the network resoure(ora.net1.network) attributes are also modified implicitly.
+
+From 11.2.0.2 onwards, if only subnet/netmask/interface change is required, network resource can be modified directly via srvctl modify network command.
+as root user:
+# srvctl modify network -k <network_number>] [-S <subnet>/<netmask>[/if1[|if2...]]
+eg:
+# srvctl modify network -k 1 -S 110.XX.XX.0/255.255.255.0/<if_name>
+
+There is no need to modify VIP or SCAN if other attributes are not changed.
+
+
+For 12.1.0.1 release, due to unpublished Bug 16608577 - CANNOT ADD SECOND PUBLIC INTERFACE IN ORACLE 12.1, the srvctl modify network command fails with:
+# srvctl modify network -k 1 -S 110.XX.XX.0/255.255.255.0/<if_name>
+PRCT-1305 : The specified interface name "<if_name>2" does not match the existing network interface name "<if_name>1"
+
+Workaround is to modify network resource with an empty interface name, then modify it again with the desired interface name, eg:
+# srvctl modify network -k 1 -S 110.XX.XX.0/255.255.255.0
+# srvctl modify network -k 1 -S 110.XX.XX.0/255.255.255.0/<if_name>2
+
+The bug has been fixed in 12.1.0.2 and above.
+
+
+
+
+Scan Ip change  : 
+
+ Once Ip mapping is chnaged at DNS refresh the SCAN VIPs with the new IP addresses from the DNS entry
+
+# $GRID_HOME/bin/srvctl modify scan -n scan.example.com
+# GRID_HOME/bin/srvctl config scan
+# GRID_HOME/bin/srvctl modify scan_listener -u
+
+
+
+
+Hostname change  : 
+ 
+In pre-11.2 Oracle Clusterware, private hostname is recorded in OCR, it can not be updated. Generally private hostname is not required to change. Its associated IP can be changed. The only way to change private hostname is by deleting/adding nodes, or reinstall Oracle Clusterware.
+
+In 11.2 Grid Infrastructure, private hostname is no longer recorded in OCR and there is no dependency on the private hostname. It can be changed freely in /etc/hosts
+
+
+
+
+################################################################################
+################################################################################
+
+Server migration : 
+
+Server migration is not in scope of this blog however just to give glimpse  most common used approach is to install fresh grid cluster in new servers and do migration of database using export import or rman .
+
+There are other online approach available like heterogenous standby and add node/delete node which can also be explored .
