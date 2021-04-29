@@ -1,0 +1,27 @@
+
+Önce haip'i disable edip, varsa iki Ip’den birini delif ile silip, tek ip üzerinden açıp, sonrasında ipmp conf’a geçilebilir.
+
+How to Modify Private Network Information in Oracle Clusterware (Doc ID 283684.1)
+
+--
+Disable HAIP
+After completing the above steps for each node, then the cluster is ready to have HAIP disabled from start up. 
+As root user:
+Disable and stop HAIP resource on each node
+[root@ ~]# /u01/12.2/grid/bin/crsctl modify res ora.cluster_interconnect.haip -attr "ENABLED=0" -init
+[root@ ~]# /u01/12.2/grid/bin/crsctl modify res ora.asm -attr "START_DEPENDENCIES='hard(ora.cssd,ora.ctssd) pullup(ora.cssd,ora.ctssd) weak(ora.drivers.acfs)', STOP_DEPENDENCIES='hard(intermediate:ora.cssd)'" –init
+[root@ ~]# /u01/12.2/grid/bin/crsctl stop res ora.cluster_interconnect.haip -init
+Stop CRS stack on each node
+[root@ ~]# /u01/12.2/grid/bin/crsctl stop crs -f
+Start CRS stack on each n
+[root@ ~]# /u01/12.2/grid/bin/crsctl start crs
+Confirm offline
+[root@ ~]# /u01/12.2/grid/bin/crsctl stat res -t -init
+[grid@ ~]$ /u01/12.2/grid/bin/crsctl stat res -t -init | egrep -A2 ora.cluster_interconnect.haip
+ora.cluster_interconnect.haip
+1 OFFLINE OFFLINE STABLE
+2 OFFLINE OFFLINE STABLE
+
+—
+
+Example How To Setup Grid Infrastructure With Solaris 11 IPMP (Doc ID 1529573.1)
